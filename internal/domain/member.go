@@ -6,16 +6,21 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"time"
 )
 
 type Member struct {
-	Name       string `json:"name"`
-	Phone      string `json:"phone"`
-	Group      string `json:"group"`
-	Corps      string `json:"corps"`
-	Gender     string `json:"gender"`
-	Generation string `json:"generation"`
-	Region     string `json:"region"`
+	Id           int       `json:"id"`
+	Name         string    `json:"name"`
+	Phone        string    `json:"phone"`
+	Group        string    `json:"group"`
+	Corps        string    `json:"corps"`
+	Gender       string    `json:"gender"`
+	Generation   string    `json:"generation"`
+	Region       string    `json:"region"`
+	RegisteredAt time.Time `json:"registered_at"`
+
+	Record *TaskRecord `json:"record"`
 }
 
 var regionMap map[string]string
@@ -52,14 +57,17 @@ func (i *Member) encode() string {
 	loadJSONData(path)
 
 	// 테스트할 지역 이름
-	return matchRegion(i.Group)
+	return matchRegion(i.Region)
 }
 
 func (i *Member) DefineTransitCode() {
 	// define transit code
-	group := i.encode()
-	switch group {
-	case "s(sb)":
-		log.Println("s(sb) 그룹입니다.")
+	i.Group = i.encode()
+}
+
+func (i *Member) RecordTask(state string) *Member {
+	i.Record = &TaskRecord{
+		state: state,
 	}
+	return i
 }

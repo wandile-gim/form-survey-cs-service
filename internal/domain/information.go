@@ -1,10 +1,15 @@
 package domain
 
+const (
+	// ServiceMEMBER is a constant for member service
+	ServiceMEMBER = "member"
+)
+
 type Information struct {
-	Member Member
+	Member []*Member
 }
 
-func (i *Information) AddMember(member Member) {
+func (i *Information) AddMember(member *Member) {
 	// add member
-	i.Member = member
+	i.Member = append(i.Member, member)
 }

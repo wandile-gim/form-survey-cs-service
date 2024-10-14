@@ -20,9 +20,10 @@ type Sheet struct {
 	SpreadsheetId string
 	Name          string
 	Range         string
+	Begin         int
 }
 
-func (s *Sheet) NewSheet(spreadsheetId, name, _range string) *Sheet {
+func NewSheet(spreadsheetId, name, _range string) *Sheet {
 	return &Sheet{
 		SpreadsheetId: spreadsheetId,
 		Name:          name,
