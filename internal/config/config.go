@@ -20,6 +20,12 @@ type Database struct {
 	DefaultDatabase string
 }
 
+type Aligo struct {
+	ApiKey string
+	UserId string
+	Sender string
+}
+
 func dbConfig() {
 	DatabaseConfiguration = &Database{
 		Host:            GetEnv("RDB_HOST", "localhost"),
@@ -28,6 +34,14 @@ func dbConfig() {
 		Password:        GetEnv("RDB_PASSWORD", ""),
 		UseDatabase:     GetEnv("USE_DATABASE", ""),
 		DefaultDatabase: GetEnv("DEFAULT_DATABASE", ""),
+	}
+}
+
+func SmsAPIConfig() *Aligo {
+	return &Aligo{
+		ApiKey: GetEnv("ALIGO_API_KEY", ""),
+		UserId: GetEnv("ALIGO_USER_ID", ""),
+		Sender: GetEnv("ALIGO_SENDER", ""),
 	}
 }
 
