@@ -27,10 +27,9 @@ jobs:
       - name: build and release to DockerHub
         env:
           NAME: dnjswo6253 # 계정 명
-          REPO: form-survey-cs
-        # 레포 이름
+          REPO: form-survey-cs # 레포 이름
         run: |
-          docker build -t $REPO .
+          docker build -t $REPO -f ./build/Dockerfile
           docker tag $REPO:latest $NAME/$REPO:latest
           docker push $NAME/$REPO:latest
 
