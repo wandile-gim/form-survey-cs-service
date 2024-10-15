@@ -19,6 +19,15 @@ var (
 	accountInfo   map[string]string
 )
 
+type textReplace struct {
+	Region        string
+	Name          string
+	Bank          string
+	AccountNumber string
+	AccountHolder string
+	Money         string
+}
+
 type Message struct {
 	To     string
 	Body   string
@@ -79,6 +88,10 @@ func loadMessageFormat(filename string) (string, error) {
 	return string(bytes), nil
 }
 
+func (s *SMSService) replaceText(text textReplace) string {
+	return fmt.Sprintf(messageFormat, text.Region, text.Name, text.Bank, text.AccountNumber, text.AccountHolder, text.Money)
+}
+
 func (s *SMSService) buildMessage(message *Message) (string, error) {
 	// 해당 지역의 정보가 존재하는지 확인
 	if accountInfo == nil {
@@ -108,7 +121,15 @@ func (s *SMSService) buildMessage(message *Message) (string, error) {
 	accountHolder := parts[2] // 예금주
 
 	// 문자 메시지 포맷 생성
-	msg := fmt.Sprintf(messageFormat, message.Member.Region, bank, accountNumber, accountHolder)
+	msg := s.replaceText(textReplace{
+		Region:        message.Member.Region,
+		Name:          message.Member.Name,
+		Bank:          bank,
+		AccountNumber: accountNumber,
+		AccountHolder: accountHolder,
+		Money:         message.Member.Food,
+	})
+
 	message.Body = msg
 	return msg, nil
 }

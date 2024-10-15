@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+const defaultDues = "5000원"
+
 type Member struct {
 	Id           int       `json:"id"`
 	Name         string    `json:"name"`
@@ -19,6 +21,7 @@ type Member struct {
 	Generation   string    `json:"generation"`
 	Region       string    `json:"region"`
 	RegisteredAt time.Time `json:"registered_at"`
+	Food         string    `json:"food"`
 
 	Record *TaskRecord `json:"record"`
 }
@@ -69,4 +72,10 @@ func (i *Member) RecordTask(state string) *Member {
 		state: state,
 	}
 	return i
+}
+
+func (i *Member) CalcDues() {
+	if i.Food == "" {
+		i.Food = defaultDues
+	}
 }
