@@ -2,7 +2,7 @@ package domain
 
 import (
 	"encoding/json"
-	"fmt"
+	"form-survey-cs-service/internal/config"
 	"io/ioutil"
 	"log"
 	"os"
@@ -52,9 +52,8 @@ func matchRegion(region string) string {
 }
 
 func (i *Member) encode() string {
-	path := fmt.Sprintf("%s%s", confDir, "encode.json")
 	// encode to json
-	loadJSONData(path)
+	loadJSONData(config.EncodeJsonPath)
 
 	// 테스트할 지역 이름
 	return matchRegion(i.Region)

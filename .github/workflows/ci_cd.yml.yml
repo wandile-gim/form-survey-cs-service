@@ -53,14 +53,14 @@ jobs:
         uses: appleboy/ssh-action@master
         env:
           APP: "dnjswo6253/form-survey-cs"
-          COMPOSE: "/home/ubuntu/form-survey-cs/deployment/docker-compose.yml"
+          COMPOSE: "/home/ec2-user/form-survey-cs-service/deployment/docker-compose.yml"
         with:
           username: ubuntu
-          host: $
-          key: $
+          host: ${{secrets.DOCKERHUB_USERNAME}}
+          key: ${{secrets.DOCKERHUB_USERNAME}}
           envs: APP, COMPOSE
           script_stop: true
           script: |
-            sudo docker-compose -f $COMPOSE down --rmi all
+            sudo docker compose -f $COMPOSE down --rmi all
             sudo docker pull $/$APP:latest
-            sudo docker-compose -f $COMPOSE up -d
+            sudo docker compose -f $COMPOSE up -d

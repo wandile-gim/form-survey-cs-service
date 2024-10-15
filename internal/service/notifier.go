@@ -18,19 +18,6 @@ var (
 	accountInfo   map[string]string
 )
 
-func init() {
-	// load account info
-	err := loadAccountInfo("internal/service/config/bank_acount.json")
-	if err != nil {
-		panic(err)
-	}
-	// load message format
-	messageFormat, err = loadMessageFormat("internal/service/config/message_format.txt")
-	if err != nil {
-		panic(err)
-	}
-}
-
 type Message struct {
 	To     string
 	Body   string
@@ -52,9 +39,9 @@ func NewSMSService() *SMSService {
 }
 
 // JSON 파일을 읽어서 전역 변수에 맵을 저장하는 함수
-func loadAccountInfo(filename string) error {
+func loadAccountInfo() error {
 	// 파일을 읽음
-	file, err := os.Open(filename)
+	file, err := os.Open(config.BankAccountSecretPath)
 	if err != nil {
 		return fmt.Errorf("파일을 여는데 실패했습니다: %w", err)
 	}
@@ -93,6 +80,12 @@ func loadMessageFormat(filename string) (string, error) {
 
 func (s *SMSService) buildMessage(message *Message) (string, error) {
 	// 해당 지역의 정보가 존재하는지 확인
+	if accountInfo == nil {
+		loadAccountInfo()
+	} else if messageFormat == "" {
+		messageFormat, _ = loadMessageFormat(config.MessageFormatPath)
+	}
+
 	info, exists := accountInfo[message.Member.Region]
 	if !exists {
 		return "", fmt.Errorf("해당 지역(%s)의 정보가 없습니다", message.Member.Region)

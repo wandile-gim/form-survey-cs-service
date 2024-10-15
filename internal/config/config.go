@@ -8,8 +8,19 @@ import (
 
 var (
 	once                  sync.Once
+	Dev                   bool
+	ClientSecret          string
+	EncodeJsonPath        string
+	TokenSecretPath       string
+	BankAccountSecretPath string
+	MessageFormatPath     string
 	DatabaseConfiguration *Database
 )
+
+func init() {
+	isDev()
+	loadEnv()
+}
 
 type Database struct {
 	Username        string
@@ -24,6 +35,19 @@ type Aligo struct {
 	ApiKey string
 	UserId string
 	Sender string
+}
+
+func isDev() bool {
+	Dev = GetEnvAsBool("DEV", "false")
+	return Dev
+}
+
+func loadEnv() {
+	ClientSecret = GetEnv("CLIENT_SECRET_PATH", "/internal/config/client_secret.json")
+	EncodeJsonPath = GetEnv("ENCODE_JSON_PATH", "/internal/config/encode.json")
+	TokenSecretPath = GetEnv("TOKEN_PATH", "/internal/config/token.json")
+	BankAccountSecretPath = GetEnv("BANK_ACCOUNT_PATH", "/internal/service/config/bank_account.json")
+	MessageFormatPath = GetEnv("MESSAGE_FORMAT_PATH", "/internal/service/config/message_format.txt")
 }
 
 func dbConfig() {

@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"form-survey-cs-service/internal/config"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"log"
@@ -14,16 +15,15 @@ import (
 const confDir = "internal/config/"
 
 // Retrieve a token, saves the token, then returns the generated client.
-func getClient(config *oauth2.Config) *http.Client {
-	tokFile := "token.json"
-	path := fmt.Sprintf("%s%s", confDir, tokFile)
+func getClient(conf *oauth2.Config) *http.Client {
+	path := config.TokenSecretPath
 	tok, err := tokenFromFile(path)
 	if err != nil {
 		// 토큰이 없으면 웹에서 인증 코드를 받아야 함
-		tok = getTokenFromWeb(config)
+		tok = getTokenFromWeb(conf)
 		saveToken(path, tok)
 	}
-	return config.Client(context.Background(), tok)
+	return conf.Client(context.Background(), tok)
 }
 
 // Request a token from the web, then returns the retrieved token.
@@ -70,8 +70,7 @@ func saveToken(path string, token *oauth2.Token) {
 }
 
 func OAuthForSheet() *http.Client {
-	credential := "client_secret.json"
-	b, err := os.ReadFile(fmt.Sprintf("%s%s", confDir, credential))
+	b, err := os.ReadFile(config.ClientSecret)
 	if err != nil {
 		log.Fatalf("Unable to read client secret file: %v", err)
 	}
