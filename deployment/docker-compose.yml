@@ -1,27 +1,35 @@
 services:
-  db:
+  cs-db:
     image: postgres:13.3
     ports:
-      - 5432:5432
+      - 5433:5433
+    expose:
+      - 5433:5433
     volumes:
-      - service-db-data:/var/lib/postgresql/data
+      - survey-db:/var/lib/postgresql/data
+    command: -p 5433
     env_file:
-      - .env
+      - ../../envs/form-survey-cs/.env
+
   service:
     image: dnjswo6253/form-survey-cs:latest
     build:
-      context: ../build/form-survey-cs-service
+      context: ../build/form-survey-cs-service/
       dockerfile: ./Dockerfile
     container_name: service
     restart: always
     ports:
       - 8080:8080
     depends_on:
-      - db
+      - cs-db
     env_file:
-      - .env
+      - ../../envs/form-survey-cs/.env
     environment:
       DEV: false
+    volumes:
+      - type: bind
+        source: ../../envs/form-survey-cs/
+        target: /app/env/
 
 volumes:
-  service-db-data:
+  survey-db:
