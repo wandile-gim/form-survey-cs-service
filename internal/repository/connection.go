@@ -33,7 +33,7 @@ func Open() *ent.Client {
 	pool := pgxConnection()
 	db := stdlib.OpenDBFromPool(pool)
 	drv := entsql.OpenDB(dialect.Postgres, db)
-	return ent.NewClient(ent.Driver(drv), ent.Debug())
+	return ent.NewClient(ent.Driver(drv))
 }
 
 func Migration() {
