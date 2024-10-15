@@ -135,13 +135,13 @@ func (s *SMSService) sendSMS(title string, message *Message) error {
 	conf := config.SmsAPIConfig()
 	// 요청을 위한 데이터를 설정 (URL 인코딩된 폼 데이터)
 	data := map[string]string{
-		"key":         conf.ApiKey,          // API 키
-		"user_id":     conf.UserId,          // 사용자 ID
-		"sender":      conf.Sender,          // 발신자 번호
-		"receiver":    message.Member.Phone, // 수신자 번호
-		"msg":         message.Body,         // 메시지 내용
-		"title":       title,                // 제목
-		"testmode_yn": "Y",                  // 테스트 모드
+		"key":      conf.ApiKey,          // API 키
+		"user_id":  conf.UserId,          // 사용자 ID
+		"sender":   conf.Sender,          // 발신자 번호
+		"receiver": message.Member.Phone, // 수신자 번호
+		"msg":      message.Body,         // 메시지 내용
+		"title":    title,                // 제목
+		//"testmode_yn": "N",                  // 테스트 모드
 	}
 
 	// 새로운 멀티파트 폼 데이터 생성
