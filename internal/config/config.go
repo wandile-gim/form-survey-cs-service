@@ -18,6 +18,7 @@ var (
 )
 
 func init() {
+	DefaultSetupFromEnv()
 	isDev()
 	loadEnv()
 }
@@ -43,11 +44,11 @@ func isDev() bool {
 }
 
 func loadEnv() {
-	ClientSecret = GetEnv("CLIENT_SECRET_PATH", "/internal/config/client_secret.json")
-	EncodeJsonPath = GetEnv("ENCODE_JSON_PATH", "/internal/config/encode.json")
-	TokenSecretPath = GetEnv("TOKEN_PATH", "/internal/config/token.json")
-	BankAccountSecretPath = GetEnv("BANK_ACCOUNT_PATH", "/internal/service/config/bank_account.json")
-	MessageFormatPath = GetEnv("MESSAGE_FORMAT_PATH", "/internal/service/config/message_format.txt")
+	ClientSecret = GetEnv("CLIENT_SECRET_PATH", "internal/config/client_secret.json")
+	EncodeJsonPath = GetEnv("ENCODE_JSON_PATH", "internal/config/encode.json")
+	TokenSecretPath = GetEnv("TOKEN_PATH", "internal/config/token.json")
+	BankAccountSecretPath = GetEnv("BANK_ACCOUNT_PATH", "internal/service/config/bank_account.json")
+	MessageFormatPath = GetEnv("MESSAGE_FORMAT_PATH", "internal/service/config/message_format.txt")
 }
 
 func dbConfig() {
