@@ -10,7 +10,7 @@ COPY go.mod go.sum ./
 RUN go mod download && go mod verify
 
 # Go 코드 복사 및 빌드
-COPY . ./
+COPY .. ./
 ENV CGO_ENABLED=0
 RUN go build -o /app/form_survey_cs ./cmd
 RUN ls -l /app

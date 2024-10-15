@@ -2,20 +2,20 @@ services:
   db:
     image: postgres:13.3
     ports:
-      - "5432:5432"
+      - 5432:5432
     volumes:
       - service-db-data:/var/lib/postgresql/data
     env_file:
       - .env
   service:
-    image: "dnjswo6253/form-survey-cs-service:latest"
+    image: dnjswo6253/form-survey-cs-service:latest
     build:
-      context: ../build
-      dockerfile: Dockerfile
-    container_name: "service"
+      context: ../build/form-survey-cs-service
+      dockerfile: ./Dockerfile
+    container_name: service
     restart: always
     ports:
-      - "8080:8080"
+      - 8080:8080
     depends_on:
       - db
     env_file:
