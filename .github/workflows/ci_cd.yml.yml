@@ -30,7 +30,7 @@ jobs:
           REPO: form-survey-cs
         # 레포 이름
         run: |
-          docker build -t $REPO ./build/Dockerfile
+          docker build -t $REPO .
           docker tag $REPO:latest $NAME/$REPO:latest
           docker push $NAME/$REPO:latest
 
