@@ -20,6 +20,32 @@ func NewMemberSheetService(s *domain.SheetReader, tracker repository.TrackerRepo
 	}
 }
 
+func (s MemberSheetService) convertDate(row []interface{}) (time.Time, error) {
+	var registeredAt time.Time
+	if strings.Contains(row[0].(string), "오후") {
+		row[0] = strings.Replace(row[0].(string), "오후", "PM", 1)
+	} else if strings.Contains(row[0].(string), "오전") {
+		row[0] = strings.Replace(row[0].(string), "오전", "AM", 1)
+	}
+	if registeredAt2, err := time.Parse("2006. 01. 02 PM 3:04:05", row[0].(string)); err == nil {
+		registeredAt = registeredAt2
+	} else {
+		log.Error().Msgf("datetime을 파싱하는데 실패했습니다. %v", err)
+		return time.Time{}, err
+	}
+	return registeredAt, nil
+}
+
+func (s MemberSheetService) needToSkip(registeredAt time.Time, startIdx time.Time) bool {
+	// registeredAt을 kst로 변경
+	if registeredAt.Before(startIdx) || registeredAt.Equal(startIdx) {
+		//log.Info().Msgf("이전 데이터 스킵: %v", registeredAt)
+		log.Info().Msgf("최신 스킵 데이터: %v", startIdx.Add(-time.Hour*9))
+		return true
+	}
+	return false
+}
+
 func (s MemberSheetService) ReadSheet(sheet domain.Sheet, startIdx time.Time) (<-chan domain.Member, error) {
 	//spreadsheetId = "1umrFMx3D91eSBF8ytRecK3irLm95npNu8LIrGIKmmOc"
 	info := make(chan domain.Member)
@@ -37,39 +63,28 @@ func (s MemberSheetService) ReadSheet(sheet domain.Sheet, startIdx time.Time) (<
 				if i == 0 {
 					continue
 				}
-				var registeredAt time.Time
-				if strings.Contains(row[0].(string), "오후") {
-					row[0] = strings.Replace(row[0].(string), "오후", "PM", 1)
-				} else if strings.Contains(row[0].(string), "오전") {
-					row[0] = strings.Replace(row[0].(string), "오전", "AM", 1)
-				}
-				if registeredAt2, err := time.Parse("2006. 01. 02 PM 3:04:05", row[0].(string)); err == nil {
-					registeredAt = registeredAt2
+				if convertDate, err := s.convertDate(row); err != nil {
+					continue
+				} else if s.needToSkip(convertDate, startIdx) {
+					continue
 				} else {
-					log.Error().Msgf("datetime을 파싱하는데 실패했습니다. %v", err)
-					continue
+					member := &domain.Member{
+						Id:           i,
+						RegisteredAt: convertDate,
+						Name:         row[1].(string),
+						Gender:       row[2].(string),
+						Generation:   row[3].(string),
+						Corps:        row[4].(string),
+						Region:       row[5].(string),
+						Phone:        row[6].(string),
+						Group:        row[7].(string),
+						Food:         row[34].(string),
+					}
+					member.CalcDues()
+					//member.DefineTransitCode()
+					member.RecordTask("IDLE")
+					info <- *member
 				}
-				// registeredAt을 kst로 변경
-				//registeredAt = registeredAt.In(time.FixedZone("KST", 9*60*60))
-				if registeredAt.Before(startIdx) || registeredAt.Equal(startIdx) {
-					//log.Info().Msgf("이전 데이터 스킵: %v", registeredAt)
-					log.Info().Msgf("최신 스킵 데이터: %v", startIdx.Add(-time.Hour*9))
-					continue
-				}
-				member := &domain.Member{
-					Id:           i,
-					RegisteredAt: registeredAt,
-					Name:         row[1].(string),
-					Gender:       row[2].(string),
-					Generation:   row[3].(string),
-					Corps:        row[4].(string),
-					Region:       row[5].(string),
-					Phone:        row[6].(string),
-					Group:        row[7].(string),
-				}
-				//member.DefineTransitCode()
-				member.RecordTask("IDLE")
-				info <- *member
 			}
 		}
 	}()
