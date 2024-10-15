@@ -7,7 +7,7 @@ import (
 	"form-survey-cs-service/internal/config"
 	"form-survey-cs-service/internal/domain"
 	"github.com/rs/zerolog/log"
-	"io/ioutil"
+	"io"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -49,7 +49,7 @@ func loadAccountInfo() error {
 	defer file.Close()
 
 	// 파일 내용을 읽음
-	bytes, err := ioutil.ReadAll(file)
+	bytes, err := io.ReadAll(file)
 	if err != nil {
 		return fmt.Errorf("파일 내용을 읽는데 실패했습니다: %w", err)
 	}
@@ -72,7 +72,7 @@ func loadMessageFormat(filename string) (string, error) {
 	defer file.Close()
 
 	// 파일 내용을 읽음
-	bytes, err := ioutil.ReadAll(file)
+	bytes, err := io.ReadAll(file)
 	if err != nil {
 		return "", fmt.Errorf("파일 내용을 읽는데 실패했습니다: %w", err)
 	}
