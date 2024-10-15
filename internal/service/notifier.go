@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"form-survey-cs-service/internal/config"
 	"form-survey-cs-service/internal/domain"
+	"github.com/rs/zerolog/log"
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
@@ -114,6 +115,7 @@ func (s *SMSService) SendMessage(message *Message) {
 		return
 	}
 	err = s.sendSMS("", message)
+
 	log := fmt.Sprintf("sms sent to %s(%s) content: %s", message.Member.Name, message.Member.Phone, message.Body)
 	if err != nil {
 		log = fmt.Sprintf("sms sent failed to %s content: %s", message.Member.Phone, message.Body)
@@ -135,6 +137,8 @@ func (s *SMSService) sendSMS(title string, message *Message) error {
 		"title":       title,                // 제목
 		"testmode_yn": "Y",                  // 테스트 모드
 	}
+
+	log.Info().Msgf("API Key %s", conf.ApiKey)
 
 	// 새로운 멀티파트 폼 데이터 생성
 	body := &bytes.Buffer{}
