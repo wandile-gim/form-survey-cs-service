@@ -7,7 +7,6 @@ import (
 	"form-survey-cs-service/internal/domain"
 	"form-survey-cs-service/internal/repository"
 	"form-survey-cs-service/internal/service"
-	_ "github.com/lib/pq"
 	"github.com/rs/zerolog/log"
 	"html"
 	"net/http"
