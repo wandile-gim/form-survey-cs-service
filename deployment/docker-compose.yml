@@ -21,7 +21,7 @@ services:
     env_file:
       - .env
     environment:
-      - DEV: false
+      DEV: false
 
 volumes:
   service-db-data:
