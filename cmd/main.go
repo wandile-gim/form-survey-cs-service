@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"form-survey-cs-service/internal/config"
 	"form-survey-cs-service/internal/domain"
 	"form-survey-cs-service/internal/repository"
 	"form-survey-cs-service/internal/service"
@@ -17,7 +16,7 @@ import (
 func main() {
 	ctx := context.Background()
 
-	config.DefaultSetupFromEnv()
+	//config.DefaultSetupFromEnv()
 	repository.Migration()
 	db := repository.Open()
 

@@ -82,9 +82,14 @@ func loadMessageFormat(filename string) (string, error) {
 func (s *SMSService) buildMessage(message *Message) (string, error) {
 	// 해당 지역의 정보가 존재하는지 확인
 	if accountInfo == nil {
-		loadAccountInfo()
-	} else if messageFormat == "" {
-		messageFormat, _ = loadMessageFormat(config.MessageFormatPath)
+		err := loadAccountInfo()
+		if err != nil {
+			return "", err
+		}
+	}
+	messageFormat, err := loadMessageFormat(config.MessageFormatPath)
+	if messageFormat == "" {
+		return "", fmt.Errorf("메시지 포맷이 없습니다 %s", err)
 	}
 
 	info, exists := accountInfo[message.Member.Region]
@@ -112,6 +117,7 @@ func (s *SMSService) SendMessage(message *Message) {
 	// send message
 	_, err := s.buildMessage(message)
 	if err != nil {
+		log.Error().Msgf("메시지 생성 실패: %v", err)
 		return
 	}
 	err = s.sendSMS("", message)
