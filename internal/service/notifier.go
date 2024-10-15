@@ -144,8 +144,6 @@ func (s *SMSService) sendSMS(title string, message *Message) error {
 		"testmode_yn": "Y",                  // 테스트 모드
 	}
 
-	log.Info().Msgf("API Key %s", conf.ApiKey)
-
 	// 새로운 멀티파트 폼 데이터 생성
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)

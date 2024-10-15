@@ -53,7 +53,7 @@ jobs:
         uses: appleboy/ssh-action@master
         env:
           APP: dnjswo6253/form-survey-cs
-          COMPOSE: deployment/docker-compose.yml
+          COMPOSE: /home/ec2-user/form-survey-cs-service/deployment/docker-compose.yml
         with:
           username: ec2-user
           host: ${{secrets.EC2_HOST}}
