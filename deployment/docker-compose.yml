@@ -8,7 +8,7 @@ services:
     env_file:
       - .env
   service:
-    image: dnjswo6253/form-survey-cs-service:latest
+    image: dnjswo6253/form-survey-cs:latest
     build:
       context: ../build/form-survey-cs-service
       dockerfile: ./Dockerfile
