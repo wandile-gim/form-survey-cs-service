@@ -30,6 +30,8 @@ type Task struct {
 	Group string `json:"group,omitempty"`
 	// Corps holds the value of the "corps" field.
 	Corps string `json:"corps,omitempty"`
+	// Food holds the value of the "food" field.
+	Food string `json:"food,omitempty"`
 	// Gender holds the value of the "gender" field.
 	Gender string `json:"gender,omitempty"`
 	// Generation holds the value of the "generation" field.
@@ -71,7 +73,7 @@ func (*Task) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case task.FieldID, task.FieldRowNum:
 			values[i] = new(sql.NullInt64)
-		case task.FieldType, task.FieldName, task.FieldPhone, task.FieldGroup, task.FieldCorps, task.FieldGender, task.FieldGeneration, task.FieldRegion:
+		case task.FieldType, task.FieldName, task.FieldPhone, task.FieldGroup, task.FieldCorps, task.FieldFood, task.FieldGender, task.FieldGeneration, task.FieldRegion:
 			values[i] = new(sql.NullString)
 		case task.FieldRegisteredAt:
 			values[i] = new(sql.NullTime)
@@ -131,6 +133,12 @@ func (t *Task) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field corps", values[i])
 			} else if value.Valid {
 				t.Corps = value.String
+			}
+		case task.FieldFood:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field food", values[i])
+			} else if value.Valid {
+				t.Food = value.String
 			}
 		case task.FieldGender:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -214,6 +222,9 @@ func (t *Task) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("corps=")
 	builder.WriteString(t.Corps)
+	builder.WriteString(", ")
+	builder.WriteString("food=")
+	builder.WriteString(t.Food)
 	builder.WriteString(", ")
 	builder.WriteString("gender=")
 	builder.WriteString(t.Gender)

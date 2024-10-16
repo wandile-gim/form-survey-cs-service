@@ -46,6 +46,7 @@ type TaskMutation struct {
 	phone              *string
 	group              *string
 	corps              *string
+	food               *string
 	gender             *string
 	generation         *string
 	region             *string
@@ -424,6 +425,55 @@ func (m *TaskMutation) ResetCorps() {
 	delete(m.clearedFields, task.FieldCorps)
 }
 
+// SetFood sets the "food" field.
+func (m *TaskMutation) SetFood(s string) {
+	m.food = &s
+}
+
+// Food returns the value of the "food" field in the mutation.
+func (m *TaskMutation) Food() (r string, exists bool) {
+	v := m.food
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldFood returns the old "food" field's value of the Task entity.
+// If the Task object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TaskMutation) OldFood(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldFood is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldFood requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldFood: %w", err)
+	}
+	return oldValue.Food, nil
+}
+
+// ClearFood clears the value of the "food" field.
+func (m *TaskMutation) ClearFood() {
+	m.food = nil
+	m.clearedFields[task.FieldFood] = struct{}{}
+}
+
+// FoodCleared returns if the "food" field was cleared in this mutation.
+func (m *TaskMutation) FoodCleared() bool {
+	_, ok := m.clearedFields[task.FieldFood]
+	return ok
+}
+
+// ResetFood resets all changes to the "food" field.
+func (m *TaskMutation) ResetFood() {
+	m.food = nil
+	delete(m.clearedFields, task.FieldFood)
+}
+
 // SetGender sets the "gender" field.
 func (m *TaskMutation) SetGender(s string) {
 	m.gender = &s
@@ -680,7 +730,7 @@ func (m *TaskMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TaskMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m._type != nil {
 		fields = append(fields, task.FieldType)
 	}
@@ -698,6 +748,9 @@ func (m *TaskMutation) Fields() []string {
 	}
 	if m.corps != nil {
 		fields = append(fields, task.FieldCorps)
+	}
+	if m.food != nil {
+		fields = append(fields, task.FieldFood)
 	}
 	if m.gender != nil {
 		fields = append(fields, task.FieldGender)
@@ -731,6 +784,8 @@ func (m *TaskMutation) Field(name string) (ent.Value, bool) {
 		return m.Group()
 	case task.FieldCorps:
 		return m.Corps()
+	case task.FieldFood:
+		return m.Food()
 	case task.FieldGender:
 		return m.Gender()
 	case task.FieldGeneration:
@@ -760,6 +815,8 @@ func (m *TaskMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldGroup(ctx)
 	case task.FieldCorps:
 		return m.OldCorps(ctx)
+	case task.FieldFood:
+		return m.OldFood(ctx)
 	case task.FieldGender:
 		return m.OldGender(ctx)
 	case task.FieldGeneration:
@@ -818,6 +875,13 @@ func (m *TaskMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetCorps(v)
+		return nil
+	case task.FieldFood:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetFood(v)
 		return nil
 	case task.FieldGender:
 		v, ok := value.(string)
@@ -898,6 +962,9 @@ func (m *TaskMutation) ClearedFields() []string {
 	if m.FieldCleared(task.FieldCorps) {
 		fields = append(fields, task.FieldCorps)
 	}
+	if m.FieldCleared(task.FieldFood) {
+		fields = append(fields, task.FieldFood)
+	}
 	if m.FieldCleared(task.FieldGender) {
 		fields = append(fields, task.FieldGender)
 	}
@@ -926,6 +993,9 @@ func (m *TaskMutation) ClearField(name string) error {
 		return nil
 	case task.FieldCorps:
 		m.ClearCorps()
+		return nil
+	case task.FieldFood:
+		m.ClearFood()
 		return nil
 	case task.FieldGender:
 		m.ClearGender()
@@ -961,6 +1031,9 @@ func (m *TaskMutation) ResetField(name string) error {
 		return nil
 	case task.FieldCorps:
 		m.ResetCorps()
+		return nil
+	case task.FieldFood:
+		m.ResetFood()
 		return nil
 	case task.FieldGender:
 		m.ResetGender()

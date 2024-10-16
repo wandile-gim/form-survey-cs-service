@@ -132,6 +132,26 @@ func (tu *TaskUpdate) ClearCorps() *TaskUpdate {
 	return tu
 }
 
+// SetFood sets the "food" field.
+func (tu *TaskUpdate) SetFood(s string) *TaskUpdate {
+	tu.mutation.SetFood(s)
+	return tu
+}
+
+// SetNillableFood sets the "food" field if the given value is not nil.
+func (tu *TaskUpdate) SetNillableFood(s *string) *TaskUpdate {
+	if s != nil {
+		tu.SetFood(*s)
+	}
+	return tu
+}
+
+// ClearFood clears the value of the "food" field.
+func (tu *TaskUpdate) ClearFood() *TaskUpdate {
+	tu.mutation.ClearFood()
+	return tu
+}
+
 // SetGender sets the "gender" field.
 func (tu *TaskUpdate) SetGender(s string) *TaskUpdate {
 	tu.mutation.SetGender(s)
@@ -298,6 +318,12 @@ func (tu *TaskUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if tu.mutation.CorpsCleared() {
 		_spec.ClearField(task.FieldCorps, field.TypeString)
+	}
+	if value, ok := tu.mutation.Food(); ok {
+		_spec.SetField(task.FieldFood, field.TypeString, value)
+	}
+	if tu.mutation.FoodCleared() {
+		_spec.ClearField(task.FieldFood, field.TypeString)
 	}
 	if value, ok := tu.mutation.Gender(); ok {
 		_spec.SetField(task.FieldGender, field.TypeString, value)
@@ -469,6 +495,26 @@ func (tuo *TaskUpdateOne) SetNillableCorps(s *string) *TaskUpdateOne {
 // ClearCorps clears the value of the "corps" field.
 func (tuo *TaskUpdateOne) ClearCorps() *TaskUpdateOne {
 	tuo.mutation.ClearCorps()
+	return tuo
+}
+
+// SetFood sets the "food" field.
+func (tuo *TaskUpdateOne) SetFood(s string) *TaskUpdateOne {
+	tuo.mutation.SetFood(s)
+	return tuo
+}
+
+// SetNillableFood sets the "food" field if the given value is not nil.
+func (tuo *TaskUpdateOne) SetNillableFood(s *string) *TaskUpdateOne {
+	if s != nil {
+		tuo.SetFood(*s)
+	}
+	return tuo
+}
+
+// ClearFood clears the value of the "food" field.
+func (tuo *TaskUpdateOne) ClearFood() *TaskUpdateOne {
+	tuo.mutation.ClearFood()
 	return tuo
 }
 
@@ -668,6 +714,12 @@ func (tuo *TaskUpdateOne) sqlSave(ctx context.Context) (_node *Task, err error) 
 	}
 	if tuo.mutation.CorpsCleared() {
 		_spec.ClearField(task.FieldCorps, field.TypeString)
+	}
+	if value, ok := tuo.mutation.Food(); ok {
+		_spec.SetField(task.FieldFood, field.TypeString, value)
+	}
+	if tuo.mutation.FoodCleared() {
+		_spec.ClearField(task.FieldFood, field.TypeString)
 	}
 	if value, ok := tuo.mutation.Gender(); ok {
 		_spec.SetField(task.FieldGender, field.TypeString, value)

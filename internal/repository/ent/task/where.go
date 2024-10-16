@@ -85,6 +85,11 @@ func Corps(v string) predicate.Task {
 	return predicate.Task(sql.FieldEQ(FieldCorps, v))
 }
 
+// Food applies equality check predicate on the "food" field. It's identical to FoodEQ.
+func Food(v string) predicate.Task {
+	return predicate.Task(sql.FieldEQ(FieldFood, v))
+}
+
 // Gender applies equality check predicate on the "gender" field. It's identical to GenderEQ.
 func Gender(v string) predicate.Task {
 	return predicate.Task(sql.FieldEQ(FieldGender, v))
@@ -488,6 +493,81 @@ func CorpsEqualFold(v string) predicate.Task {
 // CorpsContainsFold applies the ContainsFold predicate on the "corps" field.
 func CorpsContainsFold(v string) predicate.Task {
 	return predicate.Task(sql.FieldContainsFold(FieldCorps, v))
+}
+
+// FoodEQ applies the EQ predicate on the "food" field.
+func FoodEQ(v string) predicate.Task {
+	return predicate.Task(sql.FieldEQ(FieldFood, v))
+}
+
+// FoodNEQ applies the NEQ predicate on the "food" field.
+func FoodNEQ(v string) predicate.Task {
+	return predicate.Task(sql.FieldNEQ(FieldFood, v))
+}
+
+// FoodIn applies the In predicate on the "food" field.
+func FoodIn(vs ...string) predicate.Task {
+	return predicate.Task(sql.FieldIn(FieldFood, vs...))
+}
+
+// FoodNotIn applies the NotIn predicate on the "food" field.
+func FoodNotIn(vs ...string) predicate.Task {
+	return predicate.Task(sql.FieldNotIn(FieldFood, vs...))
+}
+
+// FoodGT applies the GT predicate on the "food" field.
+func FoodGT(v string) predicate.Task {
+	return predicate.Task(sql.FieldGT(FieldFood, v))
+}
+
+// FoodGTE applies the GTE predicate on the "food" field.
+func FoodGTE(v string) predicate.Task {
+	return predicate.Task(sql.FieldGTE(FieldFood, v))
+}
+
+// FoodLT applies the LT predicate on the "food" field.
+func FoodLT(v string) predicate.Task {
+	return predicate.Task(sql.FieldLT(FieldFood, v))
+}
+
+// FoodLTE applies the LTE predicate on the "food" field.
+func FoodLTE(v string) predicate.Task {
+	return predicate.Task(sql.FieldLTE(FieldFood, v))
+}
+
+// FoodContains applies the Contains predicate on the "food" field.
+func FoodContains(v string) predicate.Task {
+	return predicate.Task(sql.FieldContains(FieldFood, v))
+}
+
+// FoodHasPrefix applies the HasPrefix predicate on the "food" field.
+func FoodHasPrefix(v string) predicate.Task {
+	return predicate.Task(sql.FieldHasPrefix(FieldFood, v))
+}
+
+// FoodHasSuffix applies the HasSuffix predicate on the "food" field.
+func FoodHasSuffix(v string) predicate.Task {
+	return predicate.Task(sql.FieldHasSuffix(FieldFood, v))
+}
+
+// FoodIsNil applies the IsNil predicate on the "food" field.
+func FoodIsNil() predicate.Task {
+	return predicate.Task(sql.FieldIsNull(FieldFood))
+}
+
+// FoodNotNil applies the NotNil predicate on the "food" field.
+func FoodNotNil() predicate.Task {
+	return predicate.Task(sql.FieldNotNull(FieldFood))
+}
+
+// FoodEqualFold applies the EqualFold predicate on the "food" field.
+func FoodEqualFold(v string) predicate.Task {
+	return predicate.Task(sql.FieldEqualFold(FieldFood, v))
+}
+
+// FoodContainsFold applies the ContainsFold predicate on the "food" field.
+func FoodContainsFold(v string) predicate.Task {
+	return predicate.Task(sql.FieldContainsFold(FieldFood, v))
 }
 
 // GenderEQ applies the EQ predicate on the "gender" field.

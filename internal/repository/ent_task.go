@@ -53,6 +53,7 @@ func (e EntTaskRepository) FindTaskByRegisteredAtAndNotInStatusWorkBegan(ctx con
 				Name:         task.Name,
 				Phone:        task.Phone,
 				Group:        task.Group,
+				Food:         task.Food,
 				Corps:        task.Corps,
 				Gender:       task.Gender,
 				Generation:   task.Generation,
@@ -86,6 +87,7 @@ func (e EntTaskRepository) CreateMemberTask(ctx context.Context, task domain.Mem
 			SetCorps(task.Corps).
 			SetGroup(task.Group).
 			SetPhone(task.Phone).
+			SetFood(task.Food).
 			SetGeneration(task.Generation).
 			SetGender(task.Gender).
 			SetRegion(task.Region).
@@ -147,6 +149,7 @@ func (e EntTaskRepository) GetIdleStateMemberTasks(ctx context.Context, typeStri
 					Phone:        task.Phone,
 					Group:        task.Group,
 					Corps:        task.Corps,
+					Food:         task.Food,
 					Gender:       task.Gender,
 					Generation:   task.Generation,
 					Region:       task.Region,

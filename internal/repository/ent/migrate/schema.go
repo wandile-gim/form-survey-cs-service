@@ -17,6 +17,7 @@ var (
 		{Name: "phone", Type: field.TypeString},
 		{Name: "group", Type: field.TypeString},
 		{Name: "corps", Type: field.TypeString, Nullable: true},
+		{Name: "food", Type: field.TypeString, Nullable: true},
 		{Name: "gender", Type: field.TypeString, Nullable: true},
 		{Name: "generation", Type: field.TypeString, Nullable: true},
 		{Name: "region", Type: field.TypeString},

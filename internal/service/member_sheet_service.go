@@ -60,7 +60,7 @@ func (s MemberSheetService) ReadSheet(sheet domain.Sheet, startIdx time.Time) (<
 			return
 		} else {
 			for i, row := range resp.Values {
-				if i == 0 {
+				if i == 0 || len(row) < 35 {
 					continue
 				}
 				if convertDate, err := s.convertDate(row); err != nil {

@@ -35,16 +35,16 @@ type Message struct {
 }
 
 type Notifier interface {
-	SendMessage(message *Message)
+	SendMessage(message *Message) error
 }
 
 type SMSService struct {
-	Log chan string
+	LogChan chan string
 }
 
 func NewSMSService() *SMSService {
 	log := make(chan string)
-	return &SMSService{Log: log}
+	return &SMSService{LogChan: log}
 
 }
 
@@ -100,7 +100,8 @@ func (s *SMSService) buildMessage(message *Message) (string, error) {
 			return "", err
 		}
 	}
-	messageFormat, err := loadMessageFormat(config.MessageFormatPath)
+	var err error
+	messageFormat, err = loadMessageFormat(config.MessageFormatPath)
 	if messageFormat == "" {
 		return "", fmt.Errorf("메시지 포맷이 없습니다 %s", err)
 	}
@@ -121,7 +122,7 @@ func (s *SMSService) buildMessage(message *Message) (string, error) {
 	accountHolder := parts[2] // 예금주
 
 	// 문자 메시지 포맷 생성
-	msg := s.replaceText(textReplace{
+	message.Body = s.replaceText(textReplace{
 		Region:        message.Member.Region,
 		Name:          message.Member.Name,
 		Bank:          bank,
@@ -130,30 +131,32 @@ func (s *SMSService) buildMessage(message *Message) (string, error) {
 		Money:         message.Member.Food,
 	})
 
-	message.Body = msg
-	return msg, nil
+	return message.Body, nil
 }
 
-func (s *SMSService) SendMessage(message *Message) {
+func (s *SMSService) SendMessage(message *Message) error {
 	// send message
 	_, err := s.buildMessage(message)
 	if err != nil {
 		log.Error().Msgf("메시지 생성 실패: %v", err)
-		return
+		return err
 	}
 	err = s.sendSMS("", message)
 
-	log := fmt.Sprintf("sms sent to %s(%s) content: %s", message.Member.Name, message.Member.Phone, message.Body)
+	s.LogChan <- fmt.Sprintf("sms sent to %s(%s) content: %s", message.Member.Name, message.Member.Phone, message.Body)
 	if err != nil {
-		log = fmt.Sprintf("sms sent failed to %s content: %s", message.Member.Phone, message.Body)
+		s.LogChan <- fmt.Sprintf("sms sent failed to %s content: %s", message.Member.Phone, message.Body)
+		return err
 	}
-	s.Log <- log
+
+	return nil
 }
 
 func (s *SMSService) sendSMS(title string, message *Message) error {
 	// API URL
 	url := "https://apis.aligo.in/send/"
 	conf := config.SmsAPIConfig()
+
 	// 요청을 위한 데이터를 설정 (URL 인코딩된 폼 데이터)
 	data := map[string]string{
 		"key":      conf.ApiKey,          // API 키
@@ -163,6 +166,9 @@ func (s *SMSService) sendSMS(title string, message *Message) error {
 		"msg":      message.Body,         // 메시지 내용
 		"title":    title,                // 제목
 		//"testmode_yn": "N",                  // 테스트 모드
+	}
+	if config.IsDev {
+		data["testmode_yn"] = "Y"
 	}
 
 	// 새로운 멀티파트 폼 데이터 생성

@@ -21,6 +21,7 @@ func (Task) Fields() []ent.Field {
 		field.String("phone").Comment("전화번호"),
 		field.String("group").Comment("소속"),
 		field.String("corps").Optional(),
+		field.String("food").Optional(),
 		field.String("gender").Optional(),
 		field.String("generation").Optional(),
 		field.String("region").Comment("지역"),

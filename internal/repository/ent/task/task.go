@@ -24,6 +24,8 @@ const (
 	FieldGroup = "group"
 	// FieldCorps holds the string denoting the corps field in the database.
 	FieldCorps = "corps"
+	// FieldFood holds the string denoting the food field in the database.
+	FieldFood = "food"
 	// FieldGender holds the string denoting the gender field in the database.
 	FieldGender = "gender"
 	// FieldGeneration holds the string denoting the generation field in the database.
@@ -54,6 +56,7 @@ var Columns = []string{
 	FieldPhone,
 	FieldGroup,
 	FieldCorps,
+	FieldFood,
 	FieldGender,
 	FieldGeneration,
 	FieldRegion,
@@ -111,6 +114,11 @@ func ByGroup(opts ...sql.OrderTermOption) OrderOption {
 // ByCorps orders the results by the corps field.
 func ByCorps(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldCorps, opts...).ToFunc()
+}
+
+// ByFood orders the results by the food field.
+func ByFood(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldFood, opts...).ToFunc()
 }
 
 // ByGender orders the results by the gender field.

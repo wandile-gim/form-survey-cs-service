@@ -8,7 +8,7 @@ import (
 
 var (
 	once                  sync.Once
-	Dev                   bool
+	IsDev                 bool
 	ClientSecret          string
 	EncodeJsonPath        string
 	TokenSecretPath       string
@@ -39,8 +39,8 @@ type Aligo struct {
 }
 
 func isDev() bool {
-	Dev = GetEnvAsBool("DEV", "false")
-	return Dev
+	IsDev = GetEnvAsBool("DEV", "true")
+	return IsDev
 }
 
 func loadEnv() {

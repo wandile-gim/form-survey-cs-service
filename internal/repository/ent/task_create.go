@@ -81,6 +81,20 @@ func (tc *TaskCreate) SetNillableCorps(s *string) *TaskCreate {
 	return tc
 }
 
+// SetFood sets the "food" field.
+func (tc *TaskCreate) SetFood(s string) *TaskCreate {
+	tc.mutation.SetFood(s)
+	return tc
+}
+
+// SetNillableFood sets the "food" field if the given value is not nil.
+func (tc *TaskCreate) SetNillableFood(s *string) *TaskCreate {
+	if s != nil {
+		tc.SetFood(*s)
+	}
+	return tc
+}
+
 // SetGender sets the "gender" field.
 func (tc *TaskCreate) SetGender(s string) *TaskCreate {
 	tc.mutation.SetGender(s)
@@ -267,6 +281,10 @@ func (tc *TaskCreate) createSpec() (*Task, *sqlgraph.CreateSpec) {
 	if value, ok := tc.mutation.Corps(); ok {
 		_spec.SetField(task.FieldCorps, field.TypeString, value)
 		_node.Corps = value
+	}
+	if value, ok := tc.mutation.Food(); ok {
+		_spec.SetField(task.FieldFood, field.TypeString, value)
+		_node.Food = value
 	}
 	if value, ok := tc.mutation.Gender(); ok {
 		_spec.SetField(task.FieldGender, field.TypeString, value)

@@ -35,7 +35,7 @@ func main() {
 		SpreadsheetId: "1V0l_JA6LQ7EuRt0Zb7LbPpdqzOUdaU4RTPmXnUDVP58",
 		//SpreadsheetId: "1umrFMx3D91eSBF8ytRecK3irLm95npNu8LIrGIKmmOc",
 		Name:  "설문지 응답 시트1",
-		Range: "A:H",
+		Range: "A:AJ",
 		Begin: 0,
 	}
 	sms := service.NewSMSService()
@@ -49,7 +49,7 @@ func main() {
 	go func() {
 		for {
 			select {
-			case l := <-sms.Log:
+			case l := <-sms.LogChan:
 				log.Info().Msg(l)
 			}
 		}

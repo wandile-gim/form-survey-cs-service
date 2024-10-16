@@ -18,11 +18,11 @@ func TestSMSService_buildMessage(t *testing.T) {
 		"서울": "기업 111-123455-01-011 홍길동",
 	}
 	messageFormat = `[총동문회_%s지역]
-%s님, 회비 입금 계좌는 %s %s (예금주:%s) 입니다.
+%s님, 2024 하반기 총동문회에 정상적으로 접수 완료되었습니다. 회비 입금 계좌는 %s %s (예금주:%s) 입니다.
 
 입금자명은 나라/기수/성함 (ex 미국11소피아)으로 기재하시고 %s 입금 부탁드립니다.
 
-※ 모든 총동문회 수익은 전액 발전을 위해 사용됩니다. 
+※ 모든 총동문회 수익은 전액 굿뉴스코 발전을 위해 사용됩니다.
 
 입금이 완료되면 접수용 큐알코드를 보내드리겠습니다. 감사합니다.`
 
@@ -57,7 +57,7 @@ func TestSMSService_buildMessage(t *testing.T) {
 	accountNumber := parts[1] // 계좌번호
 	accountHolder := parts[2] // 예금주
 
-	message.Body = s.replaceText(textReplace{
+	s.replaceText(textReplace{
 		Region:        message.Member.Region,
 		Name:          message.Member.Name,
 		Bank:          bank,
