@@ -141,7 +141,7 @@ func (s *SMSService) SendMessage(message *Message) error {
 		log.Error().Msgf("메시지 생성 실패: %v", err)
 		return err
 	}
-	err = s.sendSMS("", message)
+	//err = s.sendSMS("", message)
 
 	s.LogChan <- fmt.Sprintf("sms sent to %s(%s) content: %s", message.Member.Name, message.Member.Phone, message.Body)
 	if err != nil {
