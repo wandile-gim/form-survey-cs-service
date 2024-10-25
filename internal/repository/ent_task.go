@@ -35,6 +35,47 @@ func (e EntTaskRepository) GetLastTaskInIdleTimeStamp(ctx context.Context, typeS
 	return lastOne, nil
 }
 
+func (e EntTaskRepository) GetOneByRowNum(ctx context.Context, rowNum int) (*domain.Member, error) {
+	var member domain.Member
+	err := WithTx(ctx, e.ent, func(tx *ent.Tx) error {
+		task, err := tx.Task.Query().Where(task.RowNumEQ(rowNum)).WithTaskRecord().Only(ctx)
+		if err != nil {
+			return err
+		}
+		member = domain.Member{
+			Id:           task.ID,
+			Name:         task.Name,
+			Phone:        task.Phone,
+			Group:        task.Group,
+			Corps:        task.Corps,
+			Gender:       task.Gender,
+			Generation:   task.Generation,
+			Region:       task.Region,
+			RegisteredAt: task.RegisteredAt,
+			PayAmount:    task.PayAmount,
+			PaidAt:       task.PaidAt,
+			Food:         task.Food,
+		}
+
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &member, nil
+}
+
+func (e EntTaskRepository) UpdateAsPaid(ctx context.Context, ta *domain.Member) error {
+	return WithTx(ctx, e.ent, func(tx *ent.Tx) error {
+		get, err2 := tx.Task.Query().Where(task.RowNumEQ(ta.Id)).First(ctx)
+		if err2 != nil {
+			return err2
+		}
+		_, err := get.Update().SetPayAmount(ta.PayAmount).SetPaidAt(ta.PaidAt).Save(ctx)
+		return err
+	})
+}
+
 func (e EntTaskRepository) FindTaskByRegisteredAtAndNotInStatusWorkBegan(ctx context.Context, registeredAt time.Time) ([]*domain.Member, error) {
 	var members []*domain.Member
 	err := WithTx(ctx, e.ent, func(tx *ent.Tx) error {

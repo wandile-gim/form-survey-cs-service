@@ -75,6 +75,16 @@ func Phone(v string) predicate.Task {
 	return predicate.Task(sql.FieldEQ(FieldPhone, v))
 }
 
+// PayAmount applies equality check predicate on the "pay_amount" field. It's identical to PayAmountEQ.
+func PayAmount(v float64) predicate.Task {
+	return predicate.Task(sql.FieldEQ(FieldPayAmount, v))
+}
+
+// PaidAt applies equality check predicate on the "paid_at" field. It's identical to PaidAtEQ.
+func PaidAt(v string) predicate.Task {
+	return predicate.Task(sql.FieldEQ(FieldPaidAt, v))
+}
+
 // Group applies equality check predicate on the "group" field. It's identical to GroupEQ.
 func Group(v string) predicate.Task {
 	return predicate.Task(sql.FieldEQ(FieldGroup, v))
@@ -353,6 +363,131 @@ func PhoneEqualFold(v string) predicate.Task {
 // PhoneContainsFold applies the ContainsFold predicate on the "phone" field.
 func PhoneContainsFold(v string) predicate.Task {
 	return predicate.Task(sql.FieldContainsFold(FieldPhone, v))
+}
+
+// PayAmountEQ applies the EQ predicate on the "pay_amount" field.
+func PayAmountEQ(v float64) predicate.Task {
+	return predicate.Task(sql.FieldEQ(FieldPayAmount, v))
+}
+
+// PayAmountNEQ applies the NEQ predicate on the "pay_amount" field.
+func PayAmountNEQ(v float64) predicate.Task {
+	return predicate.Task(sql.FieldNEQ(FieldPayAmount, v))
+}
+
+// PayAmountIn applies the In predicate on the "pay_amount" field.
+func PayAmountIn(vs ...float64) predicate.Task {
+	return predicate.Task(sql.FieldIn(FieldPayAmount, vs...))
+}
+
+// PayAmountNotIn applies the NotIn predicate on the "pay_amount" field.
+func PayAmountNotIn(vs ...float64) predicate.Task {
+	return predicate.Task(sql.FieldNotIn(FieldPayAmount, vs...))
+}
+
+// PayAmountGT applies the GT predicate on the "pay_amount" field.
+func PayAmountGT(v float64) predicate.Task {
+	return predicate.Task(sql.FieldGT(FieldPayAmount, v))
+}
+
+// PayAmountGTE applies the GTE predicate on the "pay_amount" field.
+func PayAmountGTE(v float64) predicate.Task {
+	return predicate.Task(sql.FieldGTE(FieldPayAmount, v))
+}
+
+// PayAmountLT applies the LT predicate on the "pay_amount" field.
+func PayAmountLT(v float64) predicate.Task {
+	return predicate.Task(sql.FieldLT(FieldPayAmount, v))
+}
+
+// PayAmountLTE applies the LTE predicate on the "pay_amount" field.
+func PayAmountLTE(v float64) predicate.Task {
+	return predicate.Task(sql.FieldLTE(FieldPayAmount, v))
+}
+
+// PayAmountIsNil applies the IsNil predicate on the "pay_amount" field.
+func PayAmountIsNil() predicate.Task {
+	return predicate.Task(sql.FieldIsNull(FieldPayAmount))
+}
+
+// PayAmountNotNil applies the NotNil predicate on the "pay_amount" field.
+func PayAmountNotNil() predicate.Task {
+	return predicate.Task(sql.FieldNotNull(FieldPayAmount))
+}
+
+// PaidAtEQ applies the EQ predicate on the "paid_at" field.
+func PaidAtEQ(v string) predicate.Task {
+	return predicate.Task(sql.FieldEQ(FieldPaidAt, v))
+}
+
+// PaidAtNEQ applies the NEQ predicate on the "paid_at" field.
+func PaidAtNEQ(v string) predicate.Task {
+	return predicate.Task(sql.FieldNEQ(FieldPaidAt, v))
+}
+
+// PaidAtIn applies the In predicate on the "paid_at" field.
+func PaidAtIn(vs ...string) predicate.Task {
+	return predicate.Task(sql.FieldIn(FieldPaidAt, vs...))
+}
+
+// PaidAtNotIn applies the NotIn predicate on the "paid_at" field.
+func PaidAtNotIn(vs ...string) predicate.Task {
+	return predicate.Task(sql.FieldNotIn(FieldPaidAt, vs...))
+}
+
+// PaidAtGT applies the GT predicate on the "paid_at" field.
+func PaidAtGT(v string) predicate.Task {
+	return predicate.Task(sql.FieldGT(FieldPaidAt, v))
+}
+
+// PaidAtGTE applies the GTE predicate on the "paid_at" field.
+func PaidAtGTE(v string) predicate.Task {
+	return predicate.Task(sql.FieldGTE(FieldPaidAt, v))
+}
+
+// PaidAtLT applies the LT predicate on the "paid_at" field.
+func PaidAtLT(v string) predicate.Task {
+	return predicate.Task(sql.FieldLT(FieldPaidAt, v))
+}
+
+// PaidAtLTE applies the LTE predicate on the "paid_at" field.
+func PaidAtLTE(v string) predicate.Task {
+	return predicate.Task(sql.FieldLTE(FieldPaidAt, v))
+}
+
+// PaidAtContains applies the Contains predicate on the "paid_at" field.
+func PaidAtContains(v string) predicate.Task {
+	return predicate.Task(sql.FieldContains(FieldPaidAt, v))
+}
+
+// PaidAtHasPrefix applies the HasPrefix predicate on the "paid_at" field.
+func PaidAtHasPrefix(v string) predicate.Task {
+	return predicate.Task(sql.FieldHasPrefix(FieldPaidAt, v))
+}
+
+// PaidAtHasSuffix applies the HasSuffix predicate on the "paid_at" field.
+func PaidAtHasSuffix(v string) predicate.Task {
+	return predicate.Task(sql.FieldHasSuffix(FieldPaidAt, v))
+}
+
+// PaidAtIsNil applies the IsNil predicate on the "paid_at" field.
+func PaidAtIsNil() predicate.Task {
+	return predicate.Task(sql.FieldIsNull(FieldPaidAt))
+}
+
+// PaidAtNotNil applies the NotNil predicate on the "paid_at" field.
+func PaidAtNotNil() predicate.Task {
+	return predicate.Task(sql.FieldNotNull(FieldPaidAt))
+}
+
+// PaidAtEqualFold applies the EqualFold predicate on the "paid_at" field.
+func PaidAtEqualFold(v string) predicate.Task {
+	return predicate.Task(sql.FieldEqualFold(FieldPaidAt, v))
+}
+
+// PaidAtContainsFold applies the ContainsFold predicate on the "paid_at" field.
+func PaidAtContainsFold(v string) predicate.Task {
+	return predicate.Task(sql.FieldContainsFold(FieldPaidAt, v))
 }
 
 // GroupEQ applies the EQ predicate on the "group" field.

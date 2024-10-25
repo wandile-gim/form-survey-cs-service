@@ -26,6 +26,10 @@ type Task struct {
 	Name string `json:"name,omitempty"`
 	// 전화번호
 	Phone string `json:"phone,omitempty"`
+	// PayAmount holds the value of the "pay_amount" field.
+	PayAmount float64 `json:"pay_amount,omitempty"`
+	// PaidAt holds the value of the "paid_at" field.
+	PaidAt string `json:"paid_at,omitempty"`
 	// 소속
 	Group string `json:"group,omitempty"`
 	// Corps holds the value of the "corps" field.
@@ -71,9 +75,11 @@ func (*Task) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
+		case task.FieldPayAmount:
+			values[i] = new(sql.NullFloat64)
 		case task.FieldID, task.FieldRowNum:
 			values[i] = new(sql.NullInt64)
-		case task.FieldType, task.FieldName, task.FieldPhone, task.FieldGroup, task.FieldCorps, task.FieldFood, task.FieldGender, task.FieldGeneration, task.FieldRegion:
+		case task.FieldType, task.FieldName, task.FieldPhone, task.FieldPaidAt, task.FieldGroup, task.FieldCorps, task.FieldFood, task.FieldGender, task.FieldGeneration, task.FieldRegion:
 			values[i] = new(sql.NullString)
 		case task.FieldRegisteredAt:
 			values[i] = new(sql.NullTime)
@@ -121,6 +127,18 @@ func (t *Task) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field phone", values[i])
 			} else if value.Valid {
 				t.Phone = value.String
+			}
+		case task.FieldPayAmount:
+			if value, ok := values[i].(*sql.NullFloat64); !ok {
+				return fmt.Errorf("unexpected type %T for field pay_amount", values[i])
+			} else if value.Valid {
+				t.PayAmount = value.Float64
+			}
+		case task.FieldPaidAt:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field paid_at", values[i])
+			} else if value.Valid {
+				t.PaidAt = value.String
 			}
 		case task.FieldGroup:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -216,6 +234,12 @@ func (t *Task) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("phone=")
 	builder.WriteString(t.Phone)
+	builder.WriteString(", ")
+	builder.WriteString("pay_amount=")
+	builder.WriteString(fmt.Sprintf("%v", t.PayAmount))
+	builder.WriteString(", ")
+	builder.WriteString("paid_at=")
+	builder.WriteString(t.PaidAt)
 	builder.WriteString(", ")
 	builder.WriteString("group=")
 	builder.WriteString(t.Group)

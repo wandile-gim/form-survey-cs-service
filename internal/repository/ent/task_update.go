@@ -98,6 +98,53 @@ func (tu *TaskUpdate) SetNillablePhone(s *string) *TaskUpdate {
 	return tu
 }
 
+// SetPayAmount sets the "pay_amount" field.
+func (tu *TaskUpdate) SetPayAmount(f float64) *TaskUpdate {
+	tu.mutation.ResetPayAmount()
+	tu.mutation.SetPayAmount(f)
+	return tu
+}
+
+// SetNillablePayAmount sets the "pay_amount" field if the given value is not nil.
+func (tu *TaskUpdate) SetNillablePayAmount(f *float64) *TaskUpdate {
+	if f != nil {
+		tu.SetPayAmount(*f)
+	}
+	return tu
+}
+
+// AddPayAmount adds f to the "pay_amount" field.
+func (tu *TaskUpdate) AddPayAmount(f float64) *TaskUpdate {
+	tu.mutation.AddPayAmount(f)
+	return tu
+}
+
+// ClearPayAmount clears the value of the "pay_amount" field.
+func (tu *TaskUpdate) ClearPayAmount() *TaskUpdate {
+	tu.mutation.ClearPayAmount()
+	return tu
+}
+
+// SetPaidAt sets the "paid_at" field.
+func (tu *TaskUpdate) SetPaidAt(s string) *TaskUpdate {
+	tu.mutation.SetPaidAt(s)
+	return tu
+}
+
+// SetNillablePaidAt sets the "paid_at" field if the given value is not nil.
+func (tu *TaskUpdate) SetNillablePaidAt(s *string) *TaskUpdate {
+	if s != nil {
+		tu.SetPaidAt(*s)
+	}
+	return tu
+}
+
+// ClearPaidAt clears the value of the "paid_at" field.
+func (tu *TaskUpdate) ClearPaidAt() *TaskUpdate {
+	tu.mutation.ClearPaidAt()
+	return tu
+}
+
 // SetGroup sets the "group" field.
 func (tu *TaskUpdate) SetGroup(s string) *TaskUpdate {
 	tu.mutation.SetGroup(s)
@@ -310,6 +357,21 @@ func (tu *TaskUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := tu.mutation.Phone(); ok {
 		_spec.SetField(task.FieldPhone, field.TypeString, value)
 	}
+	if value, ok := tu.mutation.PayAmount(); ok {
+		_spec.SetField(task.FieldPayAmount, field.TypeFloat64, value)
+	}
+	if value, ok := tu.mutation.AddedPayAmount(); ok {
+		_spec.AddField(task.FieldPayAmount, field.TypeFloat64, value)
+	}
+	if tu.mutation.PayAmountCleared() {
+		_spec.ClearField(task.FieldPayAmount, field.TypeFloat64)
+	}
+	if value, ok := tu.mutation.PaidAt(); ok {
+		_spec.SetField(task.FieldPaidAt, field.TypeString, value)
+	}
+	if tu.mutation.PaidAtCleared() {
+		_spec.ClearField(task.FieldPaidAt, field.TypeString)
+	}
 	if value, ok := tu.mutation.Group(); ok {
 		_spec.SetField(task.FieldGroup, field.TypeString, value)
 	}
@@ -461,6 +523,53 @@ func (tuo *TaskUpdateOne) SetNillablePhone(s *string) *TaskUpdateOne {
 	if s != nil {
 		tuo.SetPhone(*s)
 	}
+	return tuo
+}
+
+// SetPayAmount sets the "pay_amount" field.
+func (tuo *TaskUpdateOne) SetPayAmount(f float64) *TaskUpdateOne {
+	tuo.mutation.ResetPayAmount()
+	tuo.mutation.SetPayAmount(f)
+	return tuo
+}
+
+// SetNillablePayAmount sets the "pay_amount" field if the given value is not nil.
+func (tuo *TaskUpdateOne) SetNillablePayAmount(f *float64) *TaskUpdateOne {
+	if f != nil {
+		tuo.SetPayAmount(*f)
+	}
+	return tuo
+}
+
+// AddPayAmount adds f to the "pay_amount" field.
+func (tuo *TaskUpdateOne) AddPayAmount(f float64) *TaskUpdateOne {
+	tuo.mutation.AddPayAmount(f)
+	return tuo
+}
+
+// ClearPayAmount clears the value of the "pay_amount" field.
+func (tuo *TaskUpdateOne) ClearPayAmount() *TaskUpdateOne {
+	tuo.mutation.ClearPayAmount()
+	return tuo
+}
+
+// SetPaidAt sets the "paid_at" field.
+func (tuo *TaskUpdateOne) SetPaidAt(s string) *TaskUpdateOne {
+	tuo.mutation.SetPaidAt(s)
+	return tuo
+}
+
+// SetNillablePaidAt sets the "paid_at" field if the given value is not nil.
+func (tuo *TaskUpdateOne) SetNillablePaidAt(s *string) *TaskUpdateOne {
+	if s != nil {
+		tuo.SetPaidAt(*s)
+	}
+	return tuo
+}
+
+// ClearPaidAt clears the value of the "paid_at" field.
+func (tuo *TaskUpdateOne) ClearPaidAt() *TaskUpdateOne {
+	tuo.mutation.ClearPaidAt()
 	return tuo
 }
 
@@ -705,6 +814,21 @@ func (tuo *TaskUpdateOne) sqlSave(ctx context.Context) (_node *Task, err error) 
 	}
 	if value, ok := tuo.mutation.Phone(); ok {
 		_spec.SetField(task.FieldPhone, field.TypeString, value)
+	}
+	if value, ok := tuo.mutation.PayAmount(); ok {
+		_spec.SetField(task.FieldPayAmount, field.TypeFloat64, value)
+	}
+	if value, ok := tuo.mutation.AddedPayAmount(); ok {
+		_spec.AddField(task.FieldPayAmount, field.TypeFloat64, value)
+	}
+	if tuo.mutation.PayAmountCleared() {
+		_spec.ClearField(task.FieldPayAmount, field.TypeFloat64)
+	}
+	if value, ok := tuo.mutation.PaidAt(); ok {
+		_spec.SetField(task.FieldPaidAt, field.TypeString, value)
+	}
+	if tuo.mutation.PaidAtCleared() {
+		_spec.ClearField(task.FieldPaidAt, field.TypeString)
 	}
 	if value, ok := tuo.mutation.Group(); ok {
 		_spec.SetField(task.FieldGroup, field.TypeString, value)

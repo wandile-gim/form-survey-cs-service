@@ -15,6 +15,8 @@ var (
 		{Name: "row_num", Type: field.TypeInt, Unique: true},
 		{Name: "name", Type: field.TypeString, Default: "unknown"},
 		{Name: "phone", Type: field.TypeString},
+		{Name: "pay_amount", Type: field.TypeFloat64, Nullable: true},
+		{Name: "paid_at", Type: field.TypeString, Nullable: true},
 		{Name: "group", Type: field.TypeString},
 		{Name: "corps", Type: field.TypeString, Nullable: true},
 		{Name: "food", Type: field.TypeString, Nullable: true},

@@ -11,6 +11,7 @@ import (
 type WorkerUseCase interface {
 	SaveTasks(sheetDomain domain.Sheet)
 	LoadTasks(sheetDomain domain.Sheet) chan *Task
+	UpdateTask(sheet domain.Sheet) error
 	TaskFailed(ctx context.Context, member *domain.Member, task *Task) string
 	TaskSuccess(information *domain.Member) string
 }

@@ -6,6 +6,15 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
+func (t WorkerService) UpdateTask(sheet domain.Sheet) error {
+	readSheet, err := t.sheetService.ReadSheet(sheet)
+	if err != nil {
+		return err
+	}
+	t.sheetService.UpdatePaidMember(readSheet)
+	return nil
+}
+
 // SaveTasks 시트를 읽어서 태스크를 저장하는 함수.
 func (t WorkerService) SaveTasks(sheetDomain domain.Sheet) {
 	// 인덱스 번호를 줘야해
@@ -13,15 +22,16 @@ func (t WorkerService) SaveTasks(sheetDomain domain.Sheet) {
 	if err != nil {
 		log.Error().Msgf("태스크 정보를 가져오는데 실패했습니다. %v", err)
 	}
-	sheet, err := t.sheetService.ReadSheet(sheetDomain, startIdx)
+	sheet, err := t.sheetService.ReadSheet(sheetDomain)
 	if err != nil {
 		log.Error().Msgf("시트 정보를 가져오는데 실패했습니다. %v", err)
 	}
+	ready := t.sheetService.GetReadyNewRegisters(sheet, startIdx)
 
 	go func() {
 		for {
 			select {
-			case member, ok := <-sheet:
+			case member, ok := <-ready:
 				if !ok {
 					log.Info().Msg("시트 정보를 모두 읽었습니다.")
 					return

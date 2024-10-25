@@ -20,6 +20,10 @@ const (
 	FieldName = "name"
 	// FieldPhone holds the string denoting the phone field in the database.
 	FieldPhone = "phone"
+	// FieldPayAmount holds the string denoting the pay_amount field in the database.
+	FieldPayAmount = "pay_amount"
+	// FieldPaidAt holds the string denoting the paid_at field in the database.
+	FieldPaidAt = "paid_at"
 	// FieldGroup holds the string denoting the group field in the database.
 	FieldGroup = "group"
 	// FieldCorps holds the string denoting the corps field in the database.
@@ -54,6 +58,8 @@ var Columns = []string{
 	FieldRowNum,
 	FieldName,
 	FieldPhone,
+	FieldPayAmount,
+	FieldPaidAt,
 	FieldGroup,
 	FieldCorps,
 	FieldFood,
@@ -104,6 +110,16 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByPhone orders the results by the phone field.
 func ByPhone(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPhone, opts...).ToFunc()
+}
+
+// ByPayAmount orders the results by the pay_amount field.
+func ByPayAmount(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPayAmount, opts...).ToFunc()
+}
+
+// ByPaidAt orders the results by the paid_at field.
+func ByPaidAt(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPaidAt, opts...).ToFunc()
 }
 
 // ByGroup orders the results by the group field.

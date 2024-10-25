@@ -44,6 +44,9 @@ type TaskMutation struct {
 	addrow_num         *int
 	name               *string
 	phone              *string
+	pay_amount         *float64
+	addpay_amount      *float64
+	paid_at            *string
 	group              *string
 	corps              *string
 	food               *string
@@ -338,6 +341,125 @@ func (m *TaskMutation) OldPhone(ctx context.Context) (v string, err error) {
 // ResetPhone resets all changes to the "phone" field.
 func (m *TaskMutation) ResetPhone() {
 	m.phone = nil
+}
+
+// SetPayAmount sets the "pay_amount" field.
+func (m *TaskMutation) SetPayAmount(f float64) {
+	m.pay_amount = &f
+	m.addpay_amount = nil
+}
+
+// PayAmount returns the value of the "pay_amount" field in the mutation.
+func (m *TaskMutation) PayAmount() (r float64, exists bool) {
+	v := m.pay_amount
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPayAmount returns the old "pay_amount" field's value of the Task entity.
+// If the Task object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TaskMutation) OldPayAmount(ctx context.Context) (v float64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPayAmount is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPayAmount requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPayAmount: %w", err)
+	}
+	return oldValue.PayAmount, nil
+}
+
+// AddPayAmount adds f to the "pay_amount" field.
+func (m *TaskMutation) AddPayAmount(f float64) {
+	if m.addpay_amount != nil {
+		*m.addpay_amount += f
+	} else {
+		m.addpay_amount = &f
+	}
+}
+
+// AddedPayAmount returns the value that was added to the "pay_amount" field in this mutation.
+func (m *TaskMutation) AddedPayAmount() (r float64, exists bool) {
+	v := m.addpay_amount
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearPayAmount clears the value of the "pay_amount" field.
+func (m *TaskMutation) ClearPayAmount() {
+	m.pay_amount = nil
+	m.addpay_amount = nil
+	m.clearedFields[task.FieldPayAmount] = struct{}{}
+}
+
+// PayAmountCleared returns if the "pay_amount" field was cleared in this mutation.
+func (m *TaskMutation) PayAmountCleared() bool {
+	_, ok := m.clearedFields[task.FieldPayAmount]
+	return ok
+}
+
+// ResetPayAmount resets all changes to the "pay_amount" field.
+func (m *TaskMutation) ResetPayAmount() {
+	m.pay_amount = nil
+	m.addpay_amount = nil
+	delete(m.clearedFields, task.FieldPayAmount)
+}
+
+// SetPaidAt sets the "paid_at" field.
+func (m *TaskMutation) SetPaidAt(s string) {
+	m.paid_at = &s
+}
+
+// PaidAt returns the value of the "paid_at" field in the mutation.
+func (m *TaskMutation) PaidAt() (r string, exists bool) {
+	v := m.paid_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPaidAt returns the old "paid_at" field's value of the Task entity.
+// If the Task object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TaskMutation) OldPaidAt(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPaidAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPaidAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPaidAt: %w", err)
+	}
+	return oldValue.PaidAt, nil
+}
+
+// ClearPaidAt clears the value of the "paid_at" field.
+func (m *TaskMutation) ClearPaidAt() {
+	m.paid_at = nil
+	m.clearedFields[task.FieldPaidAt] = struct{}{}
+}
+
+// PaidAtCleared returns if the "paid_at" field was cleared in this mutation.
+func (m *TaskMutation) PaidAtCleared() bool {
+	_, ok := m.clearedFields[task.FieldPaidAt]
+	return ok
+}
+
+// ResetPaidAt resets all changes to the "paid_at" field.
+func (m *TaskMutation) ResetPaidAt() {
+	m.paid_at = nil
+	delete(m.clearedFields, task.FieldPaidAt)
 }
 
 // SetGroup sets the "group" field.
@@ -730,7 +852,7 @@ func (m *TaskMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TaskMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 13)
 	if m._type != nil {
 		fields = append(fields, task.FieldType)
 	}
@@ -742,6 +864,12 @@ func (m *TaskMutation) Fields() []string {
 	}
 	if m.phone != nil {
 		fields = append(fields, task.FieldPhone)
+	}
+	if m.pay_amount != nil {
+		fields = append(fields, task.FieldPayAmount)
+	}
+	if m.paid_at != nil {
+		fields = append(fields, task.FieldPaidAt)
 	}
 	if m.group != nil {
 		fields = append(fields, task.FieldGroup)
@@ -780,6 +908,10 @@ func (m *TaskMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case task.FieldPhone:
 		return m.Phone()
+	case task.FieldPayAmount:
+		return m.PayAmount()
+	case task.FieldPaidAt:
+		return m.PaidAt()
 	case task.FieldGroup:
 		return m.Group()
 	case task.FieldCorps:
@@ -811,6 +943,10 @@ func (m *TaskMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldName(ctx)
 	case task.FieldPhone:
 		return m.OldPhone(ctx)
+	case task.FieldPayAmount:
+		return m.OldPayAmount(ctx)
+	case task.FieldPaidAt:
+		return m.OldPaidAt(ctx)
 	case task.FieldGroup:
 		return m.OldGroup(ctx)
 	case task.FieldCorps:
@@ -861,6 +997,20 @@ func (m *TaskMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPhone(v)
+		return nil
+	case task.FieldPayAmount:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPayAmount(v)
+		return nil
+	case task.FieldPaidAt:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPaidAt(v)
 		return nil
 	case task.FieldGroup:
 		v, ok := value.(string)
@@ -922,6 +1072,9 @@ func (m *TaskMutation) AddedFields() []string {
 	if m.addrow_num != nil {
 		fields = append(fields, task.FieldRowNum)
 	}
+	if m.addpay_amount != nil {
+		fields = append(fields, task.FieldPayAmount)
+	}
 	return fields
 }
 
@@ -932,6 +1085,8 @@ func (m *TaskMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
 	case task.FieldRowNum:
 		return m.AddedRowNum()
+	case task.FieldPayAmount:
+		return m.AddedPayAmount()
 	}
 	return nil, false
 }
@@ -948,6 +1103,13 @@ func (m *TaskMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddRowNum(v)
 		return nil
+	case task.FieldPayAmount:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddPayAmount(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Task numeric field %s", name)
 }
@@ -958,6 +1120,12 @@ func (m *TaskMutation) ClearedFields() []string {
 	var fields []string
 	if m.FieldCleared(task.FieldType) {
 		fields = append(fields, task.FieldType)
+	}
+	if m.FieldCleared(task.FieldPayAmount) {
+		fields = append(fields, task.FieldPayAmount)
+	}
+	if m.FieldCleared(task.FieldPaidAt) {
+		fields = append(fields, task.FieldPaidAt)
 	}
 	if m.FieldCleared(task.FieldCorps) {
 		fields = append(fields, task.FieldCorps)
@@ -990,6 +1158,12 @@ func (m *TaskMutation) ClearField(name string) error {
 	switch name {
 	case task.FieldType:
 		m.ClearType()
+		return nil
+	case task.FieldPayAmount:
+		m.ClearPayAmount()
+		return nil
+	case task.FieldPaidAt:
+		m.ClearPaidAt()
 		return nil
 	case task.FieldCorps:
 		m.ClearCorps()
@@ -1025,6 +1199,12 @@ func (m *TaskMutation) ResetField(name string) error {
 		return nil
 	case task.FieldPhone:
 		m.ResetPhone()
+		return nil
+	case task.FieldPayAmount:
+		m.ResetPayAmount()
+		return nil
+	case task.FieldPaidAt:
+		m.ResetPaidAt()
 		return nil
 	case task.FieldGroup:
 		m.ResetGroup()

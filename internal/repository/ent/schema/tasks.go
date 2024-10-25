@@ -19,6 +19,8 @@ func (Task) Fields() []ent.Field {
 		field.Int("row_num").Unique().Comment("행 번호"),
 		field.String("name").Default("unknown"),
 		field.String("phone").Comment("전화번호"),
+		field.Float("pay_amount").Optional(),
+		field.String("paid_at").Optional(),
 		field.String("group").Comment("소속"),
 		field.String("corps").Optional(),
 		field.String("food").Optional(),

@@ -61,6 +61,34 @@ func (tc *TaskCreate) SetPhone(s string) *TaskCreate {
 	return tc
 }
 
+// SetPayAmount sets the "pay_amount" field.
+func (tc *TaskCreate) SetPayAmount(f float64) *TaskCreate {
+	tc.mutation.SetPayAmount(f)
+	return tc
+}
+
+// SetNillablePayAmount sets the "pay_amount" field if the given value is not nil.
+func (tc *TaskCreate) SetNillablePayAmount(f *float64) *TaskCreate {
+	if f != nil {
+		tc.SetPayAmount(*f)
+	}
+	return tc
+}
+
+// SetPaidAt sets the "paid_at" field.
+func (tc *TaskCreate) SetPaidAt(s string) *TaskCreate {
+	tc.mutation.SetPaidAt(s)
+	return tc
+}
+
+// SetNillablePaidAt sets the "paid_at" field if the given value is not nil.
+func (tc *TaskCreate) SetNillablePaidAt(s *string) *TaskCreate {
+	if s != nil {
+		tc.SetPaidAt(*s)
+	}
+	return tc
+}
+
 // SetGroup sets the "group" field.
 func (tc *TaskCreate) SetGroup(s string) *TaskCreate {
 	tc.mutation.SetGroup(s)
@@ -273,6 +301,14 @@ func (tc *TaskCreate) createSpec() (*Task, *sqlgraph.CreateSpec) {
 	if value, ok := tc.mutation.Phone(); ok {
 		_spec.SetField(task.FieldPhone, field.TypeString, value)
 		_node.Phone = value
+	}
+	if value, ok := tc.mutation.PayAmount(); ok {
+		_spec.SetField(task.FieldPayAmount, field.TypeFloat64, value)
+		_node.PayAmount = value
+	}
+	if value, ok := tc.mutation.PaidAt(); ok {
+		_spec.SetField(task.FieldPaidAt, field.TypeString, value)
+		_node.PaidAt = value
 	}
 	if value, ok := tc.mutation.Group(); ok {
 		_spec.SetField(task.FieldGroup, field.TypeString, value)

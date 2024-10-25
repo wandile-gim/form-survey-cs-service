@@ -35,13 +35,14 @@ func main() {
 		//SpreadsheetId: "1V0l_JA6LQ7EuRt0Zb7LbPpdqzOUdaU4RTPmXnUDVP58",
 		SpreadsheetId: "1umrFMx3D91eSBF8ytRecK3irLm95npNu8LIrGIKmmOc",
 		Name:          "설문지 응답 시트1",
-		Range:         "A:AJ",
+		Range:         "A:AO",
 		Begin:         0,
 	}
 	sms := service.NewSMSService()
 	tDb := repository.NewEntTaskRepository(db)
 	tracker := repository.NewTrackerRepository(db)
-	s := service.NewMemberSheetService(r, tracker, sms)
+	taskRepo := repository.NewEntTaskRepository(db)
+	s := service.NewMemberSheetService(r, taskRepo, tracker, sms)
 	workerService := service.NewWorkerService(tDb, db, s, tracker)
 
 	worker := service.NewWorker()
@@ -57,6 +58,7 @@ func main() {
 
 	saveTick := time.NewTicker(10 * time.Second)
 	taskTick := time.NewTicker(10 * time.Second)
+	updateTick := time.NewTicker(10 * time.Second)
 	go worker.Run(ctx)
 
 	for {
@@ -73,6 +75,11 @@ func main() {
 					worker.Ready(t)
 				}
 			}(tasks)
+		case <-updateTick.C:
+			err := workerService.UpdateTask(sheet)
+			if err != nil {
+				log.Error().Msgf("UpdateTask: %v", err)
+			}
 		}
 	}
 }
