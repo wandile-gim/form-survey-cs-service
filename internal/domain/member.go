@@ -6,7 +6,6 @@ import (
 	"form-survey-cs-service/internal/config"
 	"github.com/rs/zerolog/log"
 	"io/ioutil"
-
 	"net/http"
 	"os"
 	"time"
@@ -96,7 +95,7 @@ func (i *Member) ReadyQrTask() {
 		"time":          time.Now().Format("2006-01-02 15:04:05"),
 		"name":          i.Name,
 		"gender":        i.Gender,
-		"period":        i.Corps,
+		"period":        "굿뉴스코 가족",
 		"job":           "s",
 		"region":        i.Region,
 		"phone_number":  i.Phone,
