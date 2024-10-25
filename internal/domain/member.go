@@ -3,8 +3,10 @@ package domain
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"form-survey-cs-service/internal/config"
 	"github.com/rs/zerolog/log"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -98,7 +100,7 @@ func (i *Member) ReadyQrTask() {
 		"time":          i.RegisteredAt.Format("2006-01-02 15:04:05"),
 		"name":          i.Name,
 		"gender":        i.Gender,
-		"period":        "굿뉴스코 가족",
+		"period":        "",
 		"job":           "s",
 		"region":        i.Region,
 		"phone_number":  i.Phone,
@@ -120,6 +122,11 @@ func (i *Member) ReadyQrTask() {
 	defer post.Body.Close()
 	if post.StatusCode != http.StatusCreated {
 		log.Info().Msgf("Failed to post data: %v", post.StatusCode)
+		respBody, _ := io.ReadAll(post.Body)
+		// Print the response body
+		if len(respBody) > 0 {
+			fmt.Println(string(respBody))
+		}
 		return
 	}
 	log.Info().Msgf("Success to post data: %v", post.StatusCode)
