@@ -93,14 +93,14 @@ func (i *Member) ReadyQrTask() {
 		"agree":         "Y",
 		"created_at":    i.RegisteredAt.String(),
 		"privacy_agree": "y",
-		"time":          time.Now().String(),
+		"time":          time.Now().Format("2006-01-02 15:04:05"),
 		"name":          i.Name,
 		"gender":        i.Gender,
 		"period":        i.Corps,
-		"job":           ".",
+		"job":           "s",
 		"region":        i.Region,
 		"phone_number":  i.Phone,
-		"transport":     ".",
+		"transport":     "s",
 	}
 	jsonData, err := json.Marshal(body)
 	if err != nil {
@@ -111,11 +111,12 @@ func (i *Member) ReadyQrTask() {
 	// Convert to io.Reader
 	reader := bytes.NewReader(jsonData)
 
-	post, err := http.Post(config.GetEnv("QR_API_HOST", "")+"/api/v0/apply", "application/json", reader)
+	post, err := http.Post(config.GetEnv("QR_API_HOST", "https://www.eventregister.org")+"/api/v0/apply", "application/json", reader)
 	if err != nil {
 		log.Info().Msgf("Failed to post data: %v", err)
 		return
 	}
 	defer post.Body.Close()
 	log.Info().Msgf("Ready QR Task: %v", post.StatusCode)
+	log.Info().Msgf("Ready QR Task: %v", post.Status)
 }
