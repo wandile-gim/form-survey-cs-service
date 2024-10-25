@@ -105,6 +105,8 @@ func (i *Member) ReadyQrTask() {
 		"region":        i.Region,
 		"phone_number":  i.Phone,
 		"transport":     "s",
+		"pay_amount":    i.PayAmount,
+		"food":          i.Food,
 	}
 	jsonData, err := json.Marshal(body)
 	if err != nil {
