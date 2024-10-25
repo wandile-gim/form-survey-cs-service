@@ -72,6 +72,14 @@ func (e EntTaskRepository) UpdateAsPaid(ctx context.Context, ta *domain.Member) 
 			return err2
 		}
 		_, err := get.Update().SetPayAmount(ta.PayAmount).SetPaidAt(ta.PaidAt).Save(ctx)
+
+		ta.Name = get.Name
+		ta.Phone = get.Phone
+		ta.Gender = get.Gender
+		ta.Group = get.Group
+		ta.Corps = get.Corps
+		ta.RegisteredAt = get.RegisteredAt
+
 		return err
 	})
 }

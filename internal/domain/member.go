@@ -100,7 +100,7 @@ func (i *Member) ReadyQrTask() {
 		"time":          i.RegisteredAt.Format("2006-01-02 15:04:05"),
 		"name":          i.Name,
 		"gender":        i.Gender,
-		"period":        "",
+		"period":        "굿뉴스코 가족",
 		"job":           "s",
 		"region":        i.Region,
 		"phone_number":  i.Phone,
