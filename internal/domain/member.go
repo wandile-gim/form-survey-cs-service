@@ -86,11 +86,14 @@ func (i *Member) CalcDues() {
 
 func (i *Member) ReadyQrTask() {
 	// ready qr task
+	if i.Region == "" {
+		i.Region = "s"
+	}
 	body := map[string]interface{}{
 		"cms":           "y",
 		"greetings":     "y",
 		"agree":         "Y",
-		"created_at":    time.Now().Format("2006-01-02 15:04:05"),
+		"created_at":    "",
 		"privacy_agree": "y",
 		"time":          i.RegisteredAt.Format("2006-01-02 15:04:05"),
 		"name":          i.Name,
@@ -109,8 +112,7 @@ func (i *Member) ReadyQrTask() {
 
 	// Convert to io.Reader
 	reader := bytes.NewReader(jsonData)
-
-	post, err := http.Post(config.GetEnv("QR_API_HOST", "https://www.eventregister.org")+"/api/v0/apply", "application/json", reader)
+	post, err := http.Post(config.GetEnv("QR_API_HOST", "http://localhost:8000")+"/api/v0/apply", "application/json", reader)
 	if err != nil {
 		log.Info().Msgf("Failed to post data: %v", err)
 		return
