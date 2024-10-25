@@ -90,9 +90,9 @@ func (i *Member) ReadyQrTask() {
 		"cms":           "y",
 		"greetings":     "y",
 		"agree":         "Y",
-		"created_at":    i.RegisteredAt.String(),
+		"created_at":    time.Now().Format("2006-01-02 15:04:05"),
 		"privacy_agree": "y",
-		"time":          time.Now().Format("2006-01-02 15:04:05"),
+		"time":          i.RegisteredAt.Format("2006-01-02 15:04:05"),
 		"name":          i.Name,
 		"gender":        i.Gender,
 		"period":        "굿뉴스코 가족",
@@ -116,6 +116,9 @@ func (i *Member) ReadyQrTask() {
 		return
 	}
 	defer post.Body.Close()
-	log.Info().Msgf("Ready QR Task: %v", post.StatusCode)
-	log.Info().Msgf("Ready QR Task: %v", post.Status)
+	if post.StatusCode != http.StatusCreated {
+		log.Info().Msgf("Failed to post data: %v", post.StatusCode)
+		return
+	}
+	log.Info().Msgf("Success to post data: %v", post.StatusCode)
 }
