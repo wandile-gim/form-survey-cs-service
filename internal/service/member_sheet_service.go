@@ -150,7 +150,7 @@ func (s MemberSheetService) defineNewRegister(resp *sheets.ValueRange, startIdx 
 }
 
 func (s MemberSheetService) Handle(member *domain.Member) error {
-	//s.smsService.SendMessage(&Message{Member: *member})
+	s.smsService.SendMessage(&Message{Member: *member})
 	member.Record.SetState("SUCCESS")
 
 	return nil
