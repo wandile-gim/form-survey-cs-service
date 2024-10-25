@@ -58,7 +58,7 @@ func main() {
 
 	saveTick := time.NewTicker(10 * time.Second)
 	taskTick := time.NewTicker(10 * time.Second)
-	updateTick := time.NewTicker(10 * time.Second)
+	updateTick := time.NewTicker(60 * time.Second)
 	go worker.Run(ctx)
 
 	for {
