@@ -33,7 +33,7 @@ func main() {
 	r := domain.NewSheetReader(ctx, client)
 	sheet := domain.Sheet{
 		//SpreadsheetId: "1V0l_JA6LQ7EuRt0Zb7LbPpdqzOUdaU4RTPmXnUDVP58",
-		SpreadsheetId: "1umrFMx3D91eSBF8ytRecK3irLm95npNu8LIrGIKmmOc",
+		SpreadsheetId: "1r-3aB2Bw14Ml8U0kgHT_WpGQSB4v47Bpi_6bG6Ggi5o",
 		Name:          "설문지 응답 시트1",
 		Range:         "A:AO",
 		Begin:         0,
@@ -58,7 +58,7 @@ func main() {
 
 	saveTick := time.NewTicker(10 * time.Second)
 	taskTick := time.NewTicker(10 * time.Second)
-	updateTick := time.NewTicker(60 * time.Second)
+	//updateTick := time.NewTicker(10 * time.Second)
 	go worker.Run(ctx)
 
 	for {
@@ -75,11 +75,11 @@ func main() {
 					worker.Ready(t)
 				}
 			}(tasks)
-		case <-updateTick.C:
-			err := workerService.UpdateTask(sheet)
-			if err != nil {
-				log.Error().Msgf("UpdateTask: %v", err)
-			}
+			//case <-updateTick.C:
+			//	err := workerService.UpdateTask(sheet)
+			//	if err != nil {
+			//		log.Error().Msgf("UpdateTask: %v", err)
+			//	}
 		}
 	}
 }

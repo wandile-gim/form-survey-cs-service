@@ -12,11 +12,13 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"sync"
 )
 
 var (
 	messageFormat = ""
 	accountInfo   map[string]string
+	accountInfoMu sync.RWMutex
 )
 
 type textReplace struct {
@@ -64,7 +66,9 @@ func loadAccountInfo() error {
 	}
 
 	// JSON 데이터를 맵으로 변환
+	accountInfoMu.Lock()
 	err = json.Unmarshal(bytes, &accountInfo)
+	accountInfoMu.Unlock()
 	if err != nil {
 		return fmt.Errorf("JSON을 맵으로 변환하는데 실패했습니다: %w", err)
 	}
@@ -141,13 +145,13 @@ func (s *SMSService) SendMessage(message *Message) error {
 		log.Error().Msgf("메시지 생성 실패: %v", err)
 		return err
 	}
-	err = s.sendSMS("", message)
+	//err = s.sendSMS("", message)
 
 	s.LogChan <- fmt.Sprintf("sms sent to %s(%s) content: %s", message.Member.Name, message.Member.Phone, message.Body)
-	if err != nil {
-		s.LogChan <- fmt.Sprintf("sms sent failed to %s content: %s", message.Member.Phone, message.Body)
-		return err
-	}
+	//if err != nil {
+	//	s.LogChan <- fmt.Sprintf("sms sent failed to %s content: %s", message.Member.Phone, message.Body)
+	//	return err
+	//}
 
 	return nil
 }

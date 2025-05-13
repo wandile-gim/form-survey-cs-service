@@ -4,12 +4,15 @@ import (
 	"context"
 	"form-survey-cs-service/internal/domain"
 	"form-survey-cs-service/internal/repository"
-	"github.com/rs/zerolog/log"
-	"google.golang.org/api/sheets/v4"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/rs/zerolog/log"
+	"google.golang.org/api/sheets/v4"
 )
+
+var eventId = 2025524
 
 type MemberSheetService struct {
 	sheetReader *domain.SheetReader
@@ -31,7 +34,8 @@ func (s MemberSheetService) convertDate(row interface{}) (time.Time, error) {
 	} else if strings.Contains(row.(string), "오전") {
 		row = strings.Replace(row.(string), "오전", "AM", 1)
 	}
-	if registeredAt2, err := time.Parse("2006. 01. 02 PM 3:04:05", row.(string)); err == nil {
+	// 2024. 10. 11 오후 6:18:34
+	if registeredAt2, err := time.Parse("2006. 1. 2 PM 3:04:05", row.(string)); err == nil {
 		registeredAt = registeredAt2
 	} else {
 		log.Error().Msgf("datetime을 파싱하는데 실패했습니다. %v", err)
@@ -64,13 +68,13 @@ func (s MemberSheetService) UpdatePaidMember(resp *sheets.ValueRange) {
 	ctx := context.Background()
 	//members := make([]*domain.Member, len(resp.Values))
 	for i, row := range resp.Values {
-		if i == 0 || len(row) < 37 {
+		if i == 0 || len(row) < 39 {
 			continue
 		}
-		if row[38] == "" || row[38] == nil {
+		if row[39] == nil || row[39] == "" {
 			continue
 		}
-		if row[39] == "" || row[39] == nil {
+		if row[40] == nil || row[40] == "" {
 			continue
 		}
 		//members = append(members, &domain.Member{
@@ -78,20 +82,22 @@ func (s MemberSheetService) UpdatePaidMember(resp *sheets.ValueRange) {
 		//	PaidAt:    row[35].(string),
 		//	PayAmount: row[36].(float64),
 		//})
-		payAmount, err := strconv.ParseFloat(row[39].(string), 64)
+		payAmount, err := strconv.ParseFloat(row[40].(string), 64)
 		if err != nil {
 			continue
 		}
+		memberId := eventId + i
 		member := &domain.Member{
-			Id:        i,
-			PaidAt:    row[38].(string),
+			Id:        memberId,
+			PaidAt:    row[39].(string),
 			PayAmount: payAmount,
 		}
-		num, err := s.task.GetOneByRowNum(ctx, i)
+		num, err := s.task.GetOneByRowNum(ctx, memberId)
 		if err != nil {
 			log.Error().Msgf("멤버 정보를 가져오는데 실패했습니다. %v", err)
 			continue
 		}
+		// db에 있는 멤버 결제 정보와 비교
 		if num.PaidAt == "" || num.PayAmount == 0 {
 			err := s.task.UpdateAsPaid(ctx, member)
 			if err != nil {
@@ -130,7 +136,7 @@ func (s MemberSheetService) defineNewRegister(resp *sheets.ValueRange, startIdx 
 			continue
 		} else {
 			member := &domain.Member{
-				Id:           i,
+				Id:           eventId + i,
 				RegisteredAt: convertDate,
 				Name:         row[1].(string),
 				Gender:       row[2].(string),
