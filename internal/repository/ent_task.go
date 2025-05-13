@@ -78,6 +78,7 @@ func (e EntTaskRepository) UpdateAsPaid(ctx context.Context, ta *domain.Member) 
 		ta.Gender = get.Gender
 		ta.Group = get.Group
 		ta.Corps = get.Corps
+		ta.PayAmount = get.PayAmount
 		ta.Food = get.Food
 		ta.RegisteredAt = get.RegisteredAt
 
