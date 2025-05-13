@@ -36,6 +36,8 @@ func TestMember_ReadyQrTask(t *testing.T) {
 				Gender:       "남자",
 				Generation:   "",
 				Region:       "dd",
+				PayAmount:    5000,
+				Food:         "5000원",
 				RegisteredAt: time.Now(),
 			},
 		},
