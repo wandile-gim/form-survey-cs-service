@@ -71,12 +71,13 @@ func (s MemberSheetService) UpdatePaidMember(resp *sheets.ValueRange) {
 		if i == 0 || len(row) < 41 {
 			continue
 		}
-		if row[39] == nil || row[39] == "" {
-			continue
-		}
-		if row[40] == nil || row[40] == "" {
-			continue
-		}
+		// 입금 내역 없는 사람도 문자 보냄.
+		//if row[39] == nil || row[39] == "" {
+		//	continue
+		//}
+		//if row[40] == nil || row[40] == "" {
+		//	continue
+		//}
 		//members = append(members, &domain.Member{
 		//	Id:        i,
 		//	PaidAt:    row[35].(string),

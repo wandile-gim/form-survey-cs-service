@@ -156,7 +156,7 @@ func (i *Member) ReadyQrTask() {
 	for attempt := 0; attempt < maxRetries; attempt++ {
 		// Convert to io.Reader
 		reader := bytes.NewReader(jsonData)
-		post, err := http.Post(config.GetEnv("QR_API_HOST", "http://localhost:8000")+"/api/v0/apply", "application/json", reader)
+		post, err := http.Post(config.GetEnv("QR_API_HOST", "http://localhost")+"/api/v0/apply", "application/json", reader)
 		if err != nil {
 			log.Info().Msgf("Failed to post data (attempt %d/%d): %v", attempt+1, maxRetries, err)
 			if attempt < maxRetries-1 {
