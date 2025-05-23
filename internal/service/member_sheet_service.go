@@ -48,7 +48,7 @@ func (s MemberSheetService) needToSkip(registeredAt time.Time, startIdx time.Tim
 	// registeredAt을 kst로 변경
 	if registeredAt.Before(startIdx) || registeredAt.Equal(startIdx) {
 		//log.Info().Msgf("이전 데이터 스킵: %v", registeredAt)
-		log.Info().Msgf("최신 스킵 데이터: %v", startIdx.Add(-time.Hour*9))
+		//log.Info().Msgf("최신 스킵 데이터: %v", startIdx.Add(-time.Hour*9))
 		return true
 	}
 	return false
@@ -68,7 +68,7 @@ func (s MemberSheetService) UpdatePaidMember(resp *sheets.ValueRange) {
 	ctx := context.Background()
 	//members := make([]*domain.Member, len(resp.Values))
 	for i, row := range resp.Values {
-		if i == 0 || len(row) < 39 {
+		if i == 0 || len(row) < 41 {
 			continue
 		}
 		if row[39] == nil || row[39] == "" {
@@ -94,7 +94,7 @@ func (s MemberSheetService) UpdatePaidMember(resp *sheets.ValueRange) {
 		}
 		num, err := s.task.GetOneByRowNum(ctx, memberId)
 		if err != nil {
-			log.Error().Msgf("멤버 정보를 가져오는데 실패했습니다. %v", err)
+			log.Error().Msgf("멤버 정보를 가져오는데 실패했습니다. %s %v", row[1], err)
 			continue
 		}
 		// db에 있는 멤버 결제 정보와 비교

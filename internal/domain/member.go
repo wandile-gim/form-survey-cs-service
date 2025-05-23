@@ -3,14 +3,16 @@ package domain
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"form-survey-cs-service/internal/config"
-	"github.com/rs/zerolog/log"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
+	"sync"
 	"time"
+
+	"github.com/rs/zerolog/log"
 )
 
 const defaultDues = "5000원"
@@ -86,7 +88,41 @@ func (i *Member) CalcDues() {
 	}
 }
 
+// rateLimiter is a package-level rate limiter for QR API requests
+var (
+	rateLimiter     = make(chan struct{}, 10) // Allow 10 concurrent requests
+	rateLimiterOnce sync.Once
+)
+
+// initRateLimiter initializes the rate limiter if it hasn't been initialized yet
+func initRateLimiter() {
+	rateLimiterOnce.Do(func() {
+		// Initialize rate limiter with tokens from environment variable or default to 10
+		concurrentLimit, err := strconv.Atoi(config.GetEnv("QR_API_CONCURRENT_LIMIT", "30"))
+		if err != nil || concurrentLimit <= 0 {
+			concurrentLimit = 30
+		}
+		rateLimiter = make(chan struct{}, concurrentLimit)
+		log.Info().Msgf("QR API rate limiter initialized with concurrent limit: %d", concurrentLimit)
+	})
+}
+
+func (i *Member) logFailedToSendQR() {
+	// Log the failure to send QR code
+	log.Info().Msgf("Failed to send QR code to 이름:%s(%s)", i.Name, i.Phone)
+}
+
 func (i *Member) ReadyQrTask() {
+	// Initialize rate limiter
+	initRateLimiter()
+
+	// Acquire a token from the rate limiter
+	rateLimiter <- struct{}{}
+	defer func() {
+		// Release the token back to the rate limiter when done
+		<-rateLimiter
+	}()
+
 	// ready qr task
 	if i.Region == "" {
 		i.Region = "s"
@@ -114,22 +150,40 @@ func (i *Member) ReadyQrTask() {
 		return
 	}
 
-	// Convert to io.Reader
-	reader := bytes.NewReader(jsonData)
-	post, err := http.Post(config.GetEnv("QR_API_HOST", "http://localhost:8000")+"/api/v0/apply", "application/json", reader)
-	if err != nil {
-		log.Info().Msgf("Failed to post data: %v", err)
-		return
-	}
-	defer post.Body.Close()
-	if post.StatusCode != http.StatusCreated {
-		log.Info().Msgf("Failed to post data: %v", post.StatusCode)
-		respBody, _ := io.ReadAll(post.Body)
-		// Print the response body
-		if len(respBody) > 0 {
-			fmt.Println(string(respBody))
+	// Add exponential backoff retry logic
+	backoff := 1 * time.Second
+	maxRetries := 3
+	for attempt := 0; attempt < maxRetries; attempt++ {
+		// Convert to io.Reader
+		reader := bytes.NewReader(jsonData)
+		post, err := http.Post(config.GetEnv("QR_API_HOST", "http://localhost:8000")+"/api/v0/apply", "application/json", reader)
+		if err != nil {
+			log.Info().Msgf("Failed to post data (attempt %d/%d): %v", attempt+1, maxRetries, err)
+			if attempt < maxRetries-1 {
+				time.Sleep(backoff)
+				backoff *= 2 // Exponential backoff
+			}
+			continue
+		}
+
+		defer post.Body.Close()
+		if post.StatusCode != http.StatusCreated {
+			log.Info().Msgf("Failed to post data (attempt %d/%d): status code %v", attempt+1, maxRetries, post.StatusCode)
+			respBody, _ := io.ReadAll(post.Body)
+			// Print the response body
+			if (post.StatusCode == http.StatusInternalServerError || post.StatusCode == http.StatusBadRequest) && len(respBody) > 0 {
+				// 누구에게 전송이 안됐는지 확인하기 위해서 실패 로그 남기기
+				i.logFailedToSendQR()
+			}
+
+			// If server is overloaded (429 or 503), retry with backoff
+			if (post.StatusCode == http.StatusTooManyRequests || post.StatusCode == http.StatusServiceUnavailable) && attempt < maxRetries-1 {
+				time.Sleep(backoff)
+				backoff *= 2 // Exponential backoff
+				continue
+			}
+			return
 		}
 		return
 	}
-	log.Info().Msgf("Success to post data: %v", post.StatusCode)
 }
