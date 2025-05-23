@@ -75,11 +75,11 @@ func main() {
 					worker.Ready(t)
 				}
 			}(tasks)
-			//case <-updateTick.C:
-			//	err := workerService.UpdateTask(sheet)
-			//	if err != nil {
-			//		log.Error().Msgf("UpdateTask: %v", err)
-			//	}
+		case <-updateTick.C:
+			err := workerService.UpdateTask(sheet)
+			if err != nil {
+				log.Error().Msgf("UpdateTask: %v", err)
+			}
 		}
 	}
 }
